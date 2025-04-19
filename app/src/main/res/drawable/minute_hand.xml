@@ -1,13 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-    <size android:width="92dp" android:height="15dp"/>
-    <corners android:radius="12dp" />
+<!--Basicamente, criei dois shapes (formas) para se sobreporem.
+Uma forma é transparente e a outra é sólida. A forma transparente vai sobrepor
+ a metade da forma que tem cor sólida, para que os ponteiros mantenham seu centro de rotacao
+ sem prejudicar sua visualizacao.-->
+<!-- Este arquivo define uma lista de camadas desenhadas sobre uma View -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <gradient
-        android:angle="0"
-        android:endColor="#FF820A"
-        android:centerColor="#00FF820A"
-        android:startColor="#00FF820A" />
+    <!-- Metade esquerda: completamente transparente -->
+    <item android:left="0dp" android:right="46dp">
+        <!-- Lado esquerdo da barra (46dp de largura, pois 92/2 = 46) -->
+        <shape android:shape="rectangle">
+            <!-- Define o tamanho do shape -->
+            <size android:width="46dp" android:height="15dp" />
+            <!-- Cor sólida com total transparência -->
+            <solid android:color="#00FF820A" />
+            <!-- Cantos arredondados (aplicados, mas terão mais efeito visual se a View final também tiver esse raio) -->
+            <corners android:radius="12dp" />
+        </shape>
+    </item>
 
-</shape>
+    <!-- Metade direita: cor laranja sólida (#FF820A) -->
+    <item android:left="46dp" android:right="0dp">
+        <!-- Lado direito da barra -->
+        <shape android:shape="rectangle">
+            <!-- Define o tamanho da segunda metade -->
+            <size android:width="46dp" android:height="15dp" />
+            <!-- Cor sólida opaca -->
+            <solid android:color="#FF820A" />
+            <corners android:radius="12dp" />
+        </shape>
+    </item>
+
+</layer-list>

@@ -23,7 +23,7 @@
 
     <ImageView
         android:id="@+id/hourHand"
-        android:layout_width="109dp"
+        android:layout_width="121dp"
         android:layout_height="16dp"
         android:layout_gravity="center"
         android:rotation="30"
@@ -40,7 +40,7 @@
         android:layout_width="128dp"
         android:layout_height="18dp"
         android:layout_gravity="center"
-        android:rotation="-47"
+        android:rotation="-50"
         android:src="@drawable/minute_hand"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -48,6 +48,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.45" />
+
+    <ImageView
+        android:id="@+id/center_hand"
+        android:layout_width="17dp"
+        android:layout_height="17dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.499"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.45"
+        app:srcCompat="@drawable/center_hand" />
 
     <TextView
         android:id="@+id/textviewSejaBemVind2"

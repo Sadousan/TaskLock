@@ -64,7 +64,7 @@ class Splash_screen : AppCompatActivity() {
         val hourStart = 240f
 
         // Ângulos finais
-        val minuteTarget = normalizeAngle(-47f) // 313°
+        val minuteTarget = normalizeAngle(-50f) // 313°
         val hourTarget = 30f
 
         // Aplica ângulos iniciais
