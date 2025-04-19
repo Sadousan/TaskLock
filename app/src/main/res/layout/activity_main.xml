@@ -50,7 +50,7 @@
         android:id="@+id/btn_comecarPrincipal"
         android:layout_width="165dp"
         android:layout_height="45dp"
-        android:background="@drawable/btn_princip_comecar"
+        android:background="@drawable/btn_icon_start"
         android:fontFamily="@font/poppins_medium"
         android:lineSpacingExtra="8sp"
         android:text="Começar"
@@ -89,5 +89,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.897"
-        app:srcCompat="@drawable/clean_elegant_typography_brand_logo__1__removebg_preview_1" />
+        app:srcCompat="@drawable/main_icon_tasklock" />
 </androidx.constraintlayout.widget.ConstraintLayout>

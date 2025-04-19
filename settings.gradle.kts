@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "TaskLock"
+rootProject.name = "Task Lock"
 include(":app")
  
