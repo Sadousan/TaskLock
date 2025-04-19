@@ -31,14 +31,7 @@ class Splash_screen : AppCompatActivity() {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         minuteHand = findViewById(R.id.minuteHand)
         hourHand = findViewById(R.id.hourHand)
-        animateClockHands()
-
-        // carregamento do app
-        Handler(Looper.getMainLooper()).postDelayed({
-            stopAnimations()
-            goToMainScreen()
-        }, 6000) // 6 segundos de splash
-
+        animateClockHandsPrecisely()
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -47,32 +40,74 @@ class Splash_screen : AppCompatActivity() {
         }
     }
 
-    private fun animateClockHands() {
-        // Rotação contínua do ponteiro dos minutos (mais rápido)
-        minuteAnimator = ObjectAnimator.ofFloat(minuteHand, "rotation", 0f, 360f).apply {
-            duration = 2000 // 2 segundos para um giro completo
-            repeatCount = ValueAnimator.INFINITE
-            repeatMode = ValueAnimator.RESTART
+    // Garante que o ângulo fique sempre entre 0° e 359°
+    private fun normalizeAngle(angle: Float): Float {
+        return ((angle % 360) + 360) % 360
+    }
+
+    // Calcula a menor distância positiva (para os ponteiros nao seguirem um sentido inverso ate a posicao que foi definida) de A até B
+    private fun getPositiveRotationDistance(start: Float, end: Float): Float {
+        val startNorm = normalizeAngle(start)
+        val endNorm = normalizeAngle(end)
+        return if (endNorm >= startNorm) {
+            endNorm - startNorm
+        } else {
+            360 - (startNorm - endNorm)
+        }
+    }
+
+
+    private fun animateClockHandsPrecisely() {
+
+        // Ângulos iniciais
+        val minuteStart = 120f
+        val hourStart = 240f
+
+        // Ângulos finais
+        val minuteTarget = normalizeAngle(-47f) // 313°
+        val hourTarget = 30f
+
+        // Aplica ângulos iniciais
+        minuteHand.rotation = minuteStart
+        hourHand.rotation = hourStart
+
+        //calculo de distancia angular entre ponteiros
+
+        val minuteDistance = getPositiveRotationDistance(minuteStart, minuteTarget)
+        val hourDistance = getPositiveRotationDistance(hourStart, hourTarget)
+
+        val minuteDuration = 1800L  // 1.8s
+        val hourDuration = 2100L    // 2.1s
+
+        // Ponteiro dos minutos
+        val minuteAnimator = ValueAnimator.ofFloat(0f, minuteDistance).apply {
+            duration = minuteDuration
             interpolator = LinearInterpolator()
+            addUpdateListener {
+                val offset = it.animatedValue as Float
+                minuteHand.rotation = (minuteStart + offset) % 360
+            }
             start()
         }
 
-        // Rotação contínua do ponteiro das horas (mais lento)
-        hourAnimator = ObjectAnimator.ofFloat(hourHand, "rotation", 0f, 360f).apply {
-            duration = 6000 // 6 segundos para um giro completo
-            repeatCount = ValueAnimator.INFINITE
-            repeatMode = ValueAnimator.RESTART
+        // Ponteiro das horas
+        val hourAnimator = ValueAnimator.ofFloat(0f, hourDistance).apply {
+            duration = hourDuration
             interpolator = LinearInterpolator()
+            addUpdateListener {
+                val offset = it.animatedValue as Float
+                hourHand.rotation = (hourStart + offset) % 360
+            }
             start()
         }
+        //coisa (definição de tempo de splash screen a partir da soma do tempo de animação dos ponteiros e do 1 segundo em que eles permanecem parados)
+        val maxDuration = maxOf(minuteDuration, hourDuration) + 1000L // animacao + 1s pausa
+        Handler(Looper.getMainLooper()).postDelayed({
+            goToMainScreen()
+        }, maxDuration)
     }
-    private fun stopAnimations() {
-        minuteAnimator.cancel()
-        hourAnimator.cancel()
-    }
-    private fun goToMainScreen() {
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
-        finish()
-    }
+        private fun goToMainScreen() {
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+        }        //1 segundo após a animação parar (3s total)
 }
