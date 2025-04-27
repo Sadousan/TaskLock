@@ -7,6 +7,7 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
@@ -23,6 +24,7 @@ class Splash_screen : AppCompatActivity() {
     private lateinit var hourHand: ImageView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("SplashScreen", "onCreate executado")
         enableEdgeToEdge()
         setContentView(R.layout.activity_splash_screen)
         //desabilitar modo noturno
@@ -38,6 +40,7 @@ class Splash_screen : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
     }
 
     // Garante que o ângulo fique sempre entre 0° e 359°

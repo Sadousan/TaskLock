@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Task Lock</string>
+    <string name="title_activity_login_screen">Login_screen</string>
+    <string name="prompt_email">Digite o seu Email</string>
+    <string name="prompt_password">Digite a sua senha</string>
+    <string name="action_sign_in">Entrar</string>
+    <string name="action_sign_in_short">Login</string>
+    <string name="welcome">"Seja bem vindo(a)!"</string>
+    <string name="invalid_username">Usuário inválido</string>
+    <string name="invalid_password">A senha precisa ter mais de 5 caracteres</string>
+    <string name="login_failed">"Erro no login"</string>
 </resources>

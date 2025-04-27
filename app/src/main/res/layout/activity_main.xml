@@ -81,6 +81,17 @@
         app:layout_constraintVertical_bias="0.075" />
 
     <ImageView
+        android:id="@+id/shadowicon"
+        android:layout_width="107dp"
+        android:layout_height="55dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.897"
+        app:srcCompat="@drawable/shadowforicon" />
+
+    <ImageView
         android:id="@+id/imageView"
         android:layout_width="243dp"
         android:layout_height="262dp"
@@ -90,4 +101,5 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.897"
         app:srcCompat="@drawable/main_icon_tasklock" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
