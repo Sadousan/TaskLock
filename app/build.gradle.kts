@@ -12,6 +12,8 @@ android {
         minSdk = 24
         targetSdk = 35
         versionCode = 1
+//        definição da versão com base em seus lançamentos e atualizações (para cada atualização lançada com, por exemplo
+//        correções de bugs, novas funcionalidades, etc.)
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

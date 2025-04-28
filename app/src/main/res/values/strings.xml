@@ -5,7 +5,9 @@
     <string name="prompt_password">Digite a sua senha</string>
     <string name="action_sign_in">Entrar</string>
     <string name="action_sign_in_short">Login</string>
-    <string name="welcome">"Seja bem vindo(a)!"</string>
+    <string name="welcome">"Seja bem vindo(a) ao nosso gerenciador de tarefas."</string>
+    <string name="sub_welcome">"Vamos levar sua produtividade para o próximo nível!"</string>
+    <string name="btn_enter">"Começar"</string>
     <string name="invalid_username">Usuário inválido</string>
     <string name="invalid_password">A senha precisa ter mais de 5 caracteres</string>
     <string name="login_failed">"Erro no login"</string>

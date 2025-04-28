@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Em ingles-->
+    <string name="app_name">Task Lock</string>
+    <string name="title_activity_login_screen">Login_screen</string>
+    <string name="prompt_email">Enter your email</string>
+    <string name="prompt_password">Enter your password</string>
+    <string name="action_sign_in">Enter</string>
+    <string name="action_sign_in_short">Login</string>
+    <string name="welcome">"Welcome to our task manager."</string>
+    <string name="sub_welcome">"Let's take your productivity to the next level!"</string>
+    <string name="btn_enter">"Start"</string>
+    <string name="invalid_username">Invalid username</string>
+    <string name="invalid_password">Password must be more than 5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+</resources>
