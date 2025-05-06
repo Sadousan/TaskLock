@@ -45,7 +45,6 @@
 
             <!-- Espaçamento -->
             <View android:layout_height="24dp" android:layout_width="match_parent" />
-
             <ImageView
                 android:id="@+id/imgIlustracao"
                 android:layout_width="154dp"
@@ -97,7 +96,8 @@
                 android:layout_height="wrap_content"
                 android:text="Adicionar Tarefa"
                 android:layout_marginTop="32dp"
-                android:background="@drawable/btn_icon_start" />
+                android:background="@drawable/btn_icon_start"
+                android:textColor="@color/white"/>
 
         </LinearLayout>
     </LinearLayout>
