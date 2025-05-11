@@ -5,7 +5,7 @@
         android:centerX="0.5"
         android:centerY="0.5"
         android:gradientRadius="150"
-        android:startColor="#37000000"
+        android:startColor="#2C000000"
         android:endColor="#00000000" />
     <size
         android:width="150dp"
