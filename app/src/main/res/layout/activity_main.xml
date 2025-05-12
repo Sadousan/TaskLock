@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/Main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
@@ -49,7 +49,7 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_comecarPrincipal"
         android:layout_width="165dp"
-        android:layout_height="45dp"
+        android:layout_height="50dp"
         android:background="@drawable/btn_icon_start"
         android:fontFamily="@font/poppins_medium"
         android:lineSpacingExtra="8sp"
