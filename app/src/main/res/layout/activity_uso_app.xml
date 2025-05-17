@@ -54,6 +54,7 @@
             android:textStyle="bold"
             android:textSize="16sp"
             android:layout_marginTop="24dp"
+            android:layout_marginLeft="10dp"
             android:textColor="#000000" />
 
         <!-- Container onde os itens de app serão adicionados dinamicamente -->
@@ -65,16 +66,20 @@
             android:layout_marginTop="8dp" />
 
         <!-- Botão para bloquear todos os outros apps -->
+
+        <!-- Espaço para não sobrepor rodapé -->
+
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnBlockOthers"
-            android:layout_width="match_parent"
+            android:id="@+id/btnBlock"
+            android:layout_width="318dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
             android:layout_marginTop="24dp"
             android:background="@drawable/btn_icon_start"
             android:text="Bloquear"
             android:textColor="@android:color/white" />
 
-        <!-- Espaço para não sobrepor rodapé -->
         <View
             android:layout_width="match_parent"
             android:layout_height="80dp" />

@@ -12,6 +12,7 @@
         android:layout_width="346dp"
         android:layout_height="143dp"
         android:layout_marginHorizontal="33dp"
+        android:layout_marginTop="31dp"
         android:layout_weight="5"
         android:alpha="10"
         android:fontFamily="@font/poppins_medium"
@@ -23,16 +24,17 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.661"
+        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.226" />
+        app:layout_constraintTop_toBottomOf="@+id/r46izebeyewx"
+        app:layout_constraintVertical_bias="0.035" />
 
     <TextView
         android:id="@+id/subSejaBemVind"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="23dp"
+        android:layout_marginTop="12dp"
         android:layout_weight="1"
         android:fontFamily="@font/poppins"
         android:gravity="center"
@@ -41,20 +43,21 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.488"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.426" />
+        app:layout_constraintTop_toBottomOf="@+id/textviewSejaBemVind"
+        app:layout_constraintVertical_bias="0.015" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_comecarPrincipal"
         android:layout_width="165dp"
         android:layout_height="50dp"
+        android:layout_marginTop="9dp"
         android:background="@drawable/btn_icon_start"
         android:fontFamily="@font/poppins_medium"
         android:lineSpacingExtra="8sp"
-        android:text="@string/btn_enter"
 
+        android:text="@string/btn_enter"
         android:textColor="@color/white"
         android:textColorHighlight="#F2EAEA"
         android:textSize="18sp"
@@ -62,8 +65,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.523" />
+        app:layout_constraintTop_toBottomOf="@+id/subSejaBemVind"
+        app:layout_constraintVertical_bias="0.009" />
 
     <TextView
         android:id="@+id/r46izebeyewx"
@@ -84,23 +87,36 @@
         android:id="@+id/shadowicon"
         android:layout_width="293dp"
         android:layout_height="113dp"
+        android:layout_marginTop="181dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.924"
+        app:layout_constraintTop_toBottomOf="@+id/btn_comecarPrincipal"
+        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/shadowforicon" />
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="243dp"
         android:layout_height="262dp"
+        android:layout_marginTop="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.897"
+        app:layout_constraintTop_toBottomOf="@+id/btn_comecarPrincipal"
+        app:layout_constraintVertical_bias="0.02"
         app:srcCompat="@drawable/main_icon_tasklock" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnMenu"
+        android:layout_width="60dp"
+        android:layout_height="68dp"
+        android:background="@drawable/menuicon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.046"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.024" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

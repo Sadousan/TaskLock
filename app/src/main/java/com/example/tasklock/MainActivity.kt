@@ -24,16 +24,21 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        val btnMenu = findViewById<Button>(R.id.btnMenu)
+        btnMenu.setOnClickListener {
+            goTomenuScreen()
+        }
         val btnComecar = findViewById<Button>(R.id.btn_comecarPrincipal)
         btnComecar.setOnClickListener {
-            val intent = Intent(this, Menu::class.java)
-            startActivity(intent)
-            goTomenuScreen()
-            finish()
+            goToScreen()
         }
     }
     private fun goTomenuScreen() {
+        startActivity(Intent(this, Menu::class.java))
+
+    }
+    private fun goToScreen() {
         startActivity(Intent(this, UsoApp::class.java))
-        finish()
+
     }
 }
