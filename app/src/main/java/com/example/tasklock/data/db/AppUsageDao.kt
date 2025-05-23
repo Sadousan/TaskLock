@@ -37,4 +37,8 @@ interface AppUsageDao {
 
     @Query("SELECT * FROM app_usage WHERE packageName = :pkg LIMIT 1")
     suspend fun getByPackage(pkg: String): AppUsageEntity?
+
+    @Query("DELETE FROM app_usage")
+    suspend fun deleteAll()
+
 }
