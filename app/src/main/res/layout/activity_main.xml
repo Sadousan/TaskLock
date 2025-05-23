@@ -9,8 +9,8 @@
 
     <TextView
         android:id="@+id/textviewSejaBemVind"
-        android:layout_width="346dp"
-        android:layout_height="143dp"
+        android:layout_width="408dp"
+        android:layout_height="150dp"
         android:layout_marginHorizontal="33dp"
         android:layout_marginTop="31dp"
         android:layout_weight="5"

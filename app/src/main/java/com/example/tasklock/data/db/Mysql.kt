@@ -1,4 +1,4 @@
-package com.example.tasklock.dao
+package com.example.tasklock.data.db
 
 object Mysql {
 //    atualizar(usuario))

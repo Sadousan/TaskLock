@@ -12,4 +12,7 @@
     <string name="invalid_password">A senha precisa ter mais de 5 caracteres</string>
     <string name="login_failed">"Erro no login"</string>
     <string name="title_activity_cadastro">Cadastro</string>
+    <string name="accessibility_service_description">TaskLock: Monitoramento de apps em primeiro plano</string>
+
+
 </resources>

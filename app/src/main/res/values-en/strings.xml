@@ -13,4 +13,6 @@
     <string name="invalid_username">Invalid username</string>
     <string name="invalid_password">Password must be more than 5 characters</string>
     <string name="login_failed">"Login failed"</string>
+    <string name="title_activity_cadastro">Registration</string>
+    <string name="accessibility_service_description">Task Lock: App monitoring service</string>
 </resources>
