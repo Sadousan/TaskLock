@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Permissões necessárias -->
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions"/>
-    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" tools:ignore="ProtectedPermissions" />
-
-
-
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
@@ -17,48 +17,58 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TaskLock"
+        android:hardwareAccelerated="true"
+        android:largeHeap="true"
         tools:targetApi="31">
+
         <activity
             android:name=".Item_app_block"
-            android:exported="false" />
+            android:exported="false"
+            android:configChanges="orientation|screenSize|uiMode" />
+
         <activity
             android:name=".Cadastro"
             android:exported="false"
             android:label="@string/title_activity_cadastro"
-            android:theme="@style/Theme.TaskLock" />
+            android:theme="@style/Theme.TaskLock"
+            android:configChanges="orientation|screenSize|uiMode" />
+
         <activity
             android:name=".UsoApp"
-            android:exported="true" />
+            android:exported="true"
+            android:configChanges="orientation|screenSize|uiMode"
+            android:windowSoftInputMode="adjustResize" />
+
         <activity
             android:name=".Menu"
-            android:exported="false" /> <!-- <activity -->
-        <!-- android:name=".ui.login.Login_screen" -->
-        <!-- android:exported="false" -->
-        <!-- android:label="@string/title_activity_login_screen" /> -->
-        <!--
- android:configChanges="orientation|screenSize|uiMode" evita a recriação de páginas
-        ao se alterar tema, orientação e tamanho da tela
-        -->
+            android:exported="false"
+            android:configChanges="orientation|screenSize|uiMode" />
+
         <activity
             android:name=".Splash_screen"
             android:configChanges="orientation|screenSize|uiMode"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.TaskLock.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".AdicionarTarefa"
-            android:exported="false" />
+            android:exported="false"
+            android:configChanges="orientation|screenSize|uiMode" />
+
         <activity
             android:name=".MainActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:configChanges="orientation|screenSize|uiMode" />
 
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
     </application>
 
 </manifest>

@@ -1,6 +1,5 @@
 package com.example.tasklock
 
-import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -17,100 +16,102 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class Splash_screen : AppCompatActivity() {
-    private lateinit var minuteAnimator: ObjectAnimator
-    private lateinit var hourAnimator: ObjectAnimator
-
+    private lateinit var minuteAnimator: ValueAnimator
+    private lateinit var hourAnimator: ValueAnimator
     private lateinit var minuteHand: ImageView
     private lateinit var hourHand: ImageView
+    private var isAnimationComplete = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d("SplashScreen", "onCreate executado")
+        
+        // Configure theme and orientation before setContentView
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        
         enableEdgeToEdge()
         setContentView(R.layout.activity_splash_screen)
-        //desabilitar modo noturno
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        // Bloquear rotação da tela
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
+        // Initialize views
         minuteHand = findViewById(R.id.minuteHand)
         hourHand = findViewById(R.id.hourHand)
-        animateClockHandsPrecisely()
 
+        // Setup window insets once
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.Main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
+        // Start animation
+        animateClockHandsPrecisely()
     }
 
-    // Garante que o ângulo fique sempre entre 0° e 359°
-    private fun normalizeAngle(angle: Float): Float {
-        return ((angle % 360) + 360) % 360
-    }
-
-    // Calcula a menor distância positiva (para os ponteiros nao seguirem um sentido inverso ate a posicao que foi definida) de A até B
-    private fun getPositiveRotationDistance(start: Float, end: Float): Float {
-        val startNorm = normalizeAngle(start)
-        val endNorm = normalizeAngle(end)
-        return if (endNorm >= startNorm) {
-            endNorm - startNorm
-        } else {
-            360 - (startNorm - endNorm)
+    override fun onDestroy() {
+        super.onDestroy()
+        // Clean up animators
+        if (::minuteAnimator.isInitialized) {
+            minuteAnimator.cancel()
+        }
+        if (::hourAnimator.isInitialized) {
+            hourAnimator.cancel()
         }
     }
 
-
     private fun animateClockHandsPrecisely() {
-
-        // Ângulos iniciais
-        val minuteStart = 120f
-        val hourStart = 240f
-
-        // Ângulos finais
-        val minuteTarget = normalizeAngle(-50f) // 313°
-        val hourTarget = 30f
-
-        // Aplica ângulos iniciais
-        minuteHand.rotation = minuteStart
-        hourHand.rotation = hourStart
-
-        //calculo de distancia angular entre ponteiros
-
-        val minuteDistance = getPositiveRotationDistance(minuteStart, minuteTarget)
-        val hourDistance = getPositiveRotationDistance(hourStart, hourTarget)
-
-        val minuteDuration = 1800L  // 1.8s
-        val hourDuration = 2100L    // 2.1s
+        if (isAnimationComplete) return
 
         // Ponteiro dos minutos
-        val minuteAnimator = ValueAnimator.ofFloat(0f, minuteDistance).apply {
+        val minuteStart = -50f
+        val minuteEnd = 310f
+        val minuteDistance = minuteEnd - minuteStart
+        val minuteDuration = 2000L // 2 segundos
+
+        minuteAnimator = ValueAnimator.ofFloat(0f, minuteDistance).apply {
             duration = minuteDuration
             interpolator = LinearInterpolator()
             addUpdateListener {
                 val offset = it.animatedValue as Float
-                minuteHand.rotation = (minuteStart + offset) % 360
+                minuteHand.rotation = normalizeAngle(minuteStart + offset)
             }
             start()
         }
 
         // Ponteiro das horas
-        val hourAnimator = ValueAnimator.ofFloat(0f, hourDistance).apply {
+        val hourStart = 30f
+        val hourEnd = 390f
+        val hourDistance = hourEnd - hourStart
+        val hourDuration = 2000L // 2 segundos
+
+        hourAnimator = ValueAnimator.ofFloat(0f, hourDistance).apply {
             duration = hourDuration
             interpolator = LinearInterpolator()
             addUpdateListener {
                 val offset = it.animatedValue as Float
-                hourHand.rotation = (hourStart + offset) % 360
+                hourHand.rotation = normalizeAngle(hourStart + offset)
             }
             start()
         }
-        //coisa (definição de tempo de splash screen a partir da soma do tempo de animação dos ponteiros e do 1 segundo em que eles permanecem parados)
-        val maxDuration = maxOf(minuteDuration, hourDuration) + 1000L // animacao + 1s pausa
+
+        // Schedule navigation after animation
+        val maxDuration = maxOf(minuteDuration, hourDuration) + 1000L
         Handler(Looper.getMainLooper()).postDelayed({
-            goToMainScreen()
+            if (!isFinishing) {
+                isAnimationComplete = true
+                goToMainScreen()
+            }
         }, maxDuration)
     }
-        private fun goToMainScreen() {
+
+    private fun normalizeAngle(angle: Float): Float {
+        return ((angle % 360) + 360) % 360
+    }
+
+    private fun goToMainScreen() {
+        if (!isFinishing) {
             startActivity(Intent(this, MainActivity::class.java))
             finish()
-        }        //1 segundo após a animação parar (3s total)
+        }
+    }
 }
