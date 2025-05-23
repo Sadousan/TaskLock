@@ -33,14 +33,22 @@ class UsoApp : AppCompatActivity() {
         "com.discord" to Pair("Discord", R.drawable.ic_discord),
         "com.android.chrome" to Pair("Chrome", R.drawable.ic_chrome),
         "com.opera.browser" to Pair("Opera", R.drawable.ic_opera),
-        "com.netflix.mediaclient" to Pair("Netflix", R.drawable.ic_netflix),
+        "com.netflix.mediaclient" to Pair("Netflix", R.drawable.ic_netflix), //teste
         "com.spotify.music" to Pair("Spotify", R.drawable.ic_spotify),
         "com.duolingo" to Pair("Duolingo", R.drawable.ic_duolingo),
         "com.openai.chatgpt" to Pair("Chatgpt", R.drawable.ic_openai),
         "com.microsoft.teams" to Pair("Teams", R.drawable.android),
         "com.snapchat.android" to Pair("Snapchat", R.drawable.android),
         "com.facebook.katana" to Pair("Facebook", R.drawable.android),
-        "com.twitter.android" to Pair("Twitter", R.drawable.android)
+        "com.facebooklite.katana" to Pair("Facebook Lite", R.drawable.android), //teste
+        "com.twitter.android" to Pair("Twitter", R.drawable.android), //teste
+        "ai.socialapps.speakmaster" to Pair("Poly AI", R.drawable.android),
+        "com.amino" to Pair("Amino", R.drawable.android), //teste
+        "com.kwai" to Pair("Kwai", R.drawable.android), //teste
+        "com.pinterest" to Pair("Pinterest", R.drawable.android), //teste
+        "com.rapidtv" to Pair("RapidTV", R.drawable.android), //teste
+        "com.messenger.lite" to Pair("Messenger", R.drawable.android), //teste
+        "com.tinder" to Pair("Tinder", R.drawable.android) //teste
     )
 
     private val prefixosSistema = listOf(
