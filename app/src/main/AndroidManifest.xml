@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
-    <!-- Permissões necessárias -->
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" tools:ignore="ProtectedPermissions" />
+
+
 
 
     <application
-
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -19,71 +17,48 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TaskLock"
-        android:hardwareAccelerated="true"
-        android:largeHeap="true"
         tools:targetApi="31">
-
         <activity
             android:name=".Item_app_block"
-            android:exported="false"
-            android:configChanges="orientation|screenSize|uiMode" />
-
+            android:exported="false" />
         <activity
             android:name=".Cadastro"
             android:exported="false"
             android:label="@string/title_activity_cadastro"
-            android:theme="@style/Theme.TaskLock"
-            android:configChanges="orientation|screenSize|uiMode" />
-
+            android:theme="@style/Theme.TaskLock" />
         <activity
             android:name=".UsoApp"
-            android:exported="true"
-            android:configChanges="orientation|screenSize|uiMode"
-            android:windowSoftInputMode="adjustResize" />
-
+            android:exported="true" />
         <activity
             android:name=".Menu"
-            android:exported="false"
-            android:configChanges="orientation|screenSize|uiMode" />
-
+            android:exported="false" /> <!-- <activity -->
+        <!-- android:name=".ui.login.Login_screen" -->
+        <!-- android:exported="false" -->
+        <!-- android:label="@string/title_activity_login_screen" /> -->
+        <!--
+ android:configChanges="orientation|screenSize|uiMode" evita a recriação de páginas
+        ao se alterar tema, orientação e tamanho da tela
+        -->
         <activity
             android:name=".Splash_screen"
             android:configChanges="orientation|screenSize|uiMode"
-            android:exported="true"
-            android:theme="@style/Theme.TaskLock.NoActionBar">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".AdicionarTarefa"
-            android:exported="false"
-            android:configChanges="orientation|screenSize|uiMode" />
-
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true"
-            android:configChanges="orientation|screenSize|uiMode" />
-
-        <service
-            android:name=".AppAccessibilityService"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.accessibilityservice.AccessibilityService" />
-            </intent-filter>
-            <meta-data
-                android:name="android.accessibilityservice"
-                android:resource="@xml/accessibility_service_config" />
-        </service>
-
+            android:exported="true" />
 
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
-
     </application>
 
 </manifest>

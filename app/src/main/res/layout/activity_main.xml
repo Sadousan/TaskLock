@@ -96,7 +96,7 @@
         app:srcCompat="@drawable/shadowforicon" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/imagempersonaliza"
         android:layout_width="243dp"
         android:layout_height="262dp"
         android:layout_marginTop="12dp"

@@ -3,4 +3,10 @@
     <style name="cr64">
         <item name="cornerSize">64dp</item>
     </style>
+
+    <!-- Estilo para sobreposição da AppBar -->
+    <style name="Theme.TaskLock.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <!-- Se também estiver faltando o estilo do PopupOverlay: -->
+    <style name="Theme.TaskLock.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_dadospessoais">
+
+    <fragment
+        android:id="@+id/nav_dadospessoais"
+        android:name="com.example.tasklock.ui.dadospessoais.DadosPessoaisFragment"
+        android:label="@string/menu_dadospessoais"
+        tools:layout="@layout/fragment_dadospessoais" />
+
+    <fragment
+        android:id="@+id/nav_usodeapps"
+        android:name="com.example.tasklock.ui.usodeapps.UsoDeAppsFragment"
+        android:label="@string/menu_usoapss"
+        tools:layout="@layout/activity_uso_app" />
+
+    <fragment
+        android:id="@+id/nav_adicionartarefa"
+        android:name="com.example.tasklock.ui.adicionartarefa.AdicionarTarefaFragment"
+        android:label="@string/menu_adcionartarefa"
+        tools:layout="@layout/fragment_adicionartarefa" />
+</navigation>

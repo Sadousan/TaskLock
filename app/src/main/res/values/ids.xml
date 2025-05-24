@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="imageView" type="id" />
+    <item name="textView" type="id" />
+    <item name="emailinformado" type="id" />
+    <item name="campcadastrarnome" type="id" />
+    <item name="button" type="id" />
+    <item name="campcadastrarconfirmarsenha" type="id" />
+    <item name="campcadastrarsenha" type="id" />
+    <item name="campemailcadastadro" type="id" />
+    <item name="emailinformado1" type="id" />
+    <item name="textView3" type="id" />
+    <item name="imageView1" type="id" />
+</resources>

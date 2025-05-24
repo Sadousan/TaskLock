@@ -9,7 +9,8 @@
 
     <!-- Botão Personalizado -->
     <EditText
-        android:id="@+id/CampCadastrarEmail"
+
+        android:id="@id/campemailcadastadro"
         android:layout_width="283dp"
         android:layout_height="50dp"
         android:layout_marginStart="96dp"
@@ -22,10 +23,11 @@
         app:layout_constraintHorizontal_bias="0.342"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.486" />
+        app:layout_constraintVertical_bias="0.486"
+        tools:ignore="DuplicateIds" />
 
     <EditText
-        android:id="@+id/CampCadastrarSenha"
+        android:id="@id/campcadastrarsenha"
         android:layout_width="283dp"
         android:layout_height="50dp"
         android:ems="10"
@@ -39,7 +41,7 @@
         app:layout_constraintVertical_bias="0.622" />
 
     <EditText
-        android:id="@+id/CampCadastrarConfirmarSenha"
+        android:id="@id/campcadastrarconfirmarsenha"
         android:layout_width="283dp"
         android:layout_height="50dp"
         android:ems="10"
@@ -54,7 +56,7 @@
         app:layout_constraintVertical_bias="0.76" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/button"
+        android:id="@id/button"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:background="@drawable/btn_icon_start"
@@ -67,7 +69,7 @@
         app:layout_constraintVertical_bias="0.857" />
 
     <EditText
-        android:id="@+id/CampCadastrarNome"
+        android:id="@id/campcadastrarnome"
         android:layout_width="283dp"
         android:layout_height="50dp"
         android:ems="10"
@@ -81,7 +83,7 @@
         app:layout_constraintVertical_bias="0.348" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@id/emailinformado1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="71dp"
@@ -99,7 +101,7 @@
         app:layout_constraintVertical_bias="0.295" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/raleway_thin"
@@ -129,7 +131,7 @@
         app:layout_constraintVertical_bias="0.685" />
 
     <TextView
-        android:id="@+id/textView6"
+        android:id="@id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/raleway_thin"
@@ -167,10 +169,11 @@
         app:layout_constraintHorizontal_bias="0.533"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.22" />
+        app:layout_constraintVertical_bias="0.22"
+        tools:ignore="DuplicateIds" />
 
     <ImageView
-        android:id="@+id/imageView4"
+        android:id="@id/imageView1"
         android:layout_width="151dp"
         android:layout_height="124dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -180,17 +183,5 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.003"
         app:srcCompat="@drawable/iconecadastro" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnLoginGoogle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.976" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
