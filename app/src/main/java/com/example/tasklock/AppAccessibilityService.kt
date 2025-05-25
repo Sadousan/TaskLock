@@ -2,12 +2,15 @@ package com.example.tasklock
 
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
+import androidx.core.app.NotificationCompat
 import com.example.tasklock.data.db.AppUsageDatabase
 import kotlinx.coroutines.*
 
@@ -73,6 +76,7 @@ class AppAccessibilityService : AccessibilityService() {
             currentApp.startsWith("com.mi.android.globallauncher") || // Launcher Xiaomi
             currentApp.startsWith("com.miui.home.launcher") || // Launcher Xiaomi
             currentApp.startsWith("com.android.settings") ||
+            currentApp.startsWith("com.nu.production") ||
             currentApp == packageName) {
             return
         }
@@ -147,4 +151,39 @@ class AppAccessibilityService : AccessibilityService() {
         unregisterReceiver(screenReceiver)
         Log.d("Accessibility", "AccessibilityService destruído")
     }
+    private val CHANNEL_ID = "TaskLock_Pause_Channel"
+    private val NOTIFICATION_ID = 777
+
+    private fun mostrarNotificacaoPause() {
+        criarCanalNotificacao()
+
+        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setSmallIcon(R.drawable.main_icon_tasklock)
+            .setContentTitle("TaskLock pausado")
+            .setContentText("O monitoramento está pausado durante o uso de apps sensíveis.")
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setOngoing(true)
+            .build()
+
+        startForeground(NOTIFICATION_ID, notification)
+    }
+
+    @Suppress("DEPRECATION")
+    private fun removerNotificacaoPause() {
+        stopForeground(true)
+    }
+
+    private fun criarCanalNotificacao() {
+        val channel = NotificationChannel(
+            CHANNEL_ID,
+            "Notificações TaskLock",
+            NotificationManager.IMPORTANCE_LOW
+        ).apply {
+            description = "Canal para notificações do TaskLock"
+        }
+
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
+    }
+
 }

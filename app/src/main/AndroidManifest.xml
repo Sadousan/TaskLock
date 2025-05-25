@@ -3,13 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Permissões necessárias -->
+
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions"/>
-    <uses-permission android:name="android.permission.ACCESSIBILITY_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-    <uses-permission android:name="android.permission.MANAGE_DEVICE_POLICY_ORGANIZATION_IDENTITY"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
+
 
     <application
         android:allowBackup="true"
@@ -23,6 +24,20 @@
         tools:targetApi="31" >
 
         <activity android:name=".TelaPrincipalMenu" />
+
+        <receiver android:name=".ResetReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.example.tasklock.ACTION_RESET_DAILY"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".BootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
 
         <service
             android:name=".AppAccessibilityService"
