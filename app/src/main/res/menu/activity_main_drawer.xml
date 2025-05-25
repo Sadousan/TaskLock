@@ -9,9 +9,9 @@
             android:icon="@drawable/icusuarios"
             android:title="@string/menu_dadospessoais" />
         <item
-            android:id="@+id/nav_usodeapps"
+            android:id="@+id/nav_usoapp"
             android:icon="@drawable/icgrafico"
-            android:title="@string/menu_usoapss" />
+            android:title="@string/menu_usodeapps" />
         <item
             android:id="@+id/nav_adicionartarefa"
             android:icon="@drawable/icadicionartarefa"

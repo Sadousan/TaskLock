@@ -12,14 +12,13 @@
         tools:layout="@layout/fragment_dadospessoais" />
 
     <fragment
-        android:id="@+id/nav_usodeapps"
-        android:name="com.example.tasklock.ui.usodeapps.UsoDeAppsFragment"
-        android:label="@string/menu_usoapss"
-        tools:layout="@layout/fragment_usodeapps" />
-
-    <fragment
         android:id="@+id/nav_adicionartarefa"
         android:name="com.example.tasklock.ui.adicionartarefa.AdicionarTarefaFragment"
         android:label="@string/menu_adcionartarefa"
         tools:layout="@layout/fragment_adicionartarefa" />
+    <activity
+        android:id="@+id/nav_usoapp"
+        android:name="com.example.tasklock.UsoApp"
+        android:label="@string/menu_usodeapps"
+        tools:layout="@layout/activity_uso_app" />
 </navigation>
