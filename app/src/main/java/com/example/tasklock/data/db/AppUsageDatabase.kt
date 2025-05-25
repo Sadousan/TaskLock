@@ -7,12 +7,15 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.tasklock.data.model.AppUsageEntity
 
-@Database(entities = [AppUsageEntity::class], version = 1)
+
+@Database(entities = [AppUsageEntity::class], version = 1, exportSchema = false)
 abstract class AppUsageDatabase : RoomDatabase() {
+
     abstract fun appUsageDao(): AppUsageDao
 
     companion object {
-        @Volatile private var INSTANCE: AppUsageDatabase? = null
+        @Volatile
+        private var INSTANCE: AppUsageDatabase? = null
 
         fun getInstance(context: Context): AppUsageDatabase {
             return INSTANCE ?: synchronized(this) {

@@ -13,7 +13,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.example.tasklock.databinding.ActivityTelaprincipalmenuBinding
 
-class telaprincipalmenu : AppCompatActivity() {
+class TelaPrincipalMenu : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityTelaprincipalmenuBinding

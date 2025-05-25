@@ -15,7 +15,7 @@
         android:id="@+id/nav_usodeapps"
         android:name="com.example.tasklock.ui.usodeapps.UsoDeAppsFragment"
         android:label="@string/menu_usoapss"
-        tools:layout="@layout/activity_uso_app" />
+        tools:layout="@layout/fragment_usodeapps" />
 
     <fragment
         android:id="@+id/nav_adicionartarefa"

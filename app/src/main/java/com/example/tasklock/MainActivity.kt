@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
     private fun goTomenuScreen() {
-        startActivity(Intent(this, Menu::class.java))
+        startActivity(Intent(this, TelaPrincipalMenu::class.java))
     }
     private fun goToScreen() {
         startActivity(Intent(this, UsoApp::class.java))

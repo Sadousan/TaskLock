@@ -1,175 +1,288 @@
 package com.example.tasklock
 
+import android.accessibilityservice.AccessibilityServiceInfo
 import android.app.AppOpsManager
-import android.app.usage.UsageEvents
-import android.app.usage.UsageStatsManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.PowerManager
 import android.provider.Settings
-import android.util.Log
+import android.view.Gravity
+import android.view.accessibility.AccessibilityManager
 import android.widget.*
-import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
+import com.example.tasklock.data.db.AppUsageDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class UsoApp : AppCompatActivity() {
 
+    private lateinit var permissionLauncher: ActivityResultLauncher<Intent>
+    private lateinit var chart: AppUsageChart
+
+    private val appInfoManual = mapOf(
+        "com.whatsapp" to Pair("WhatsApp", R.drawable.ic_whatsapp),
+        "com.instagram.android" to Pair("Instagram", R.drawable.ic_instagram),
+        "com.tiktok.android" to Pair("TikTok", R.drawable.ic_tiktok),//teste
+        "com.google.android.youtube" to Pair("YouTube", R.drawable.ic_youtube),
+        "org.telegram.messenger" to Pair("Telegram", R.drawable.ic_telegram),
+        "org.thunderdog.challegram" to Pair("Telegram X", R.drawable.ic_telegram),//teste
+        "com.discord" to Pair("Discord", R.drawable.ic_discord),
+        "com.android.chrome" to Pair("Chrome", R.drawable.ic_chrome),
+        "com.opera.browser" to Pair("Opera", R.drawable.ic_opera),
+        "com.netflix.mediaclient" to Pair("Netflix", R.drawable.ic_netflix),
+        "com.spotify.music" to Pair("Spotify", R.drawable.ic_spotify),
+        "com.openai.chatgpt" to Pair("Chatgpt", R.drawable.ic_openai),
+        "com.microsoft.teams" to Pair("Teams", R.drawable.ic_teams),
+        "com.snapchat.android" to Pair("Snapchat", R.drawable.ic_snapchat),//teste
+        "com.facebook.katana" to Pair("Facebook", R.drawable.ic_facebook),//teste
+        "com.facebooklite.katana" to Pair("Facebook Lite", R.drawable.ic_facebook), //teste
+        "ai.socialapps.speakmaster" to Pair("Poly AI", R.drawable.ic_polyai),
+        "com.narvii.amino.master" to Pair("Amino", R.drawable.ic_amino),
+        "com.kwai" to Pair("Kwai", R.drawable.android), //teste
+        "com.pinterest" to Pair("Pinterest", R.drawable.ic_pinterest), //teste
+        "com.rapidtv" to Pair("RapidTV", R.drawable.android), //teste
+        "com.messenger.lite" to Pair("Messenger", R.drawable.ic_messenger), //teste
+        "com.tinder" to Pair("Tinder", R.drawable.ic_tinder), //teste
+        "com.shopee.br" to Pair("Shopee", R.drawable.android), //teste
+        "com.amazon.mShop.android.shopping" to Pair("Amazon", R.drawable.android), //teste
+        "com.zzkko" to Pair("Shein", R.drawable.android), //teste
+        "com.alibaba.aliexpresshd" to Pair("AliExpress", R.drawable.android), //teste
+
+        // Adicione mais pacotes e nomes de aplicativo aqui
+    )
+
+    private val prefixosSistema = listOf(
+        "com.google.android.gms", "com.android.systemui", "com.android.phone", "com.android.settings",
+        "com.miui.", "com.samsung.", "com.sec.android", "com.motorola.",
+        "com.google.android.inputmethod", "com.xiaomi.", "com.oppo.", "com.coloros.",
+        "com.realme.", "com.vivo.", "com.huawei.", "android"
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_uso_app)
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         requestedOrientation = android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-        val mainScroll = findViewById<ScrollView>(R.id.Main)
-        ViewCompat.setOnApplyWindowInsetsListener(mainScroll) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+        chart = findViewById(R.id.chart)
+        inicializarPermissionLauncher()
+        verificarPermissoes()
 
-        // Verifica permissão no início
-        verificarPermissaoEExecutar()
-
-        // Botão extra para abrir configurações específicas da MIUI (se desejar testar)
         findViewById<Button>(R.id.btnBlock)?.setOnClickListener {
-            val intent = Intent("miui.intent.action.APP_PERM_EDITOR")
-            intent.putExtra("extra_pkgname", packageName)
-            startActivity(intent)
+//                aqui deve fazer o bloqueio de apps que estiverem marcados no check
+        }
+
+        findViewById<ImageButton>(R.id.btnHelp)?.setOnClickListener {
+            AlertDialog.Builder(this)
+                .setTitle("Algo de errado? ✍(◔◡◔)")
+                .setMessage(
+                    "O TaskLock começará a registrar seu uso de aplicativos (considerados distrativos) a partir do momento em que foi iniciado.\n\n" +
+                            "Os dados se tornarão mais precisos ao longo do dia.\n\n" +
+                            "Retorne após alguns instantes, para acompanhar suas estatísticas!"
+                )
+                .setPositiveButton("Entendido") { dialog, _ ->
+                    dialog.dismiss()
+                    carregarAppsDoBanco()
+                }
+                .show()
+        }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checarEDefinirResetDiario()
+
+        if (todasPermissoesConcedidas()) {
+            carregarAppsDoBanco()
         }
     }
 
-    private fun verificarPermissaoEExecutar() {
-        if (!hasUsageStatsPermission()) {
-            Toast.makeText(this, "Permissão de uso não concedida. Redirecionando...", Toast.LENGTH_SHORT).show()
-            // Inicia Activity de permissões e espera resultado
-            startActivityForResult(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS), 1234)
-        } else {
-            carregarAppsMaisUsados()
+
+    private fun inicializarPermissionLauncher() {
+        permissionLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) {
+            verificarPermissoes()
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        // Quando retorna da tela de permissões, tenta recarregar automaticamente
-        if (requestCode == 1234) {
-            if (hasUsageStatsPermission()) {
-                Toast.makeText(this, "Permissão concedida. Carregando apps...", Toast.LENGTH_SHORT).show()
-                carregarAppsMaisUsados()
-            } else {
-                Toast.makeText(this, "Permissão ainda não concedida.", Toast.LENGTH_SHORT).show()
+    private fun verificarPermissoes() {
+        when {
+            !hasUsageStatsPermission() -> {
+                solicitarPermissao(
+                    "Permissão de uso necessária",
+                    "Ative o acesso de uso para monitorar os aplicativos.",
+                    Settings.ACTION_USAGE_ACCESS_SETTINGS
+                )
+            }
+            !isAccessibilityEnabled() -> {
+                solicitarPermissao(
+                    "Permissão de acessibilidade necessária",
+                    "Ative o TaskLock na acessibilidade para monitoramento correto.",
+                    Settings.ACTION_ACCESSIBILITY_SETTINGS
+                )
+            }
+            !hasBackgroundPermission() && !jaSolicitouBackground() -> {
+                solicitarPermissaoDeBackground()
+            }
+            else -> {
+                if (!boasVindasJaMostrada()) {
+                    mostrarTelaBoasVindas()
+                }
+                carregarAppsDoBanco()
             }
         }
     }
 
-    // Coleta e exibe apps mais usados via UsageEvents
-    private fun carregarAppsMaisUsados() {
+    private fun solicitarPermissao(titulo: String, mensagem: String, intentAction: String) {
+        AlertDialog.Builder(this)
+            .setTitle(titulo)
+            .setMessage(mensagem)
+            .setCancelable(false)
+            .setPositiveButton("Permitir") { _, _ ->
+                try {
+                    permissionLauncher.launch(Intent(intentAction))
+                } catch (e: Exception) {
+                    permissionLauncher.launch(Intent(Settings.ACTION_SETTINGS))
+                }
+            }
+            .show()
+    }
+
+    private fun solicitarPermissaoDeBackground() {
+        AlertDialog.Builder(this)
+            .setTitle("Permissão de segundo plano")
+            .setMessage("Ative o início automático e funcionamento em segundo plano para garantir funcionamento contínuo do TaskLock.")
+            .setCancelable(false)
+            .setPositiveButton("Permitir") { _, _ ->
+                try {
+                    val intent = Intent().apply {
+                        component = ComponentName(
+                            "com.miui.securitycenter",
+                            "com.miui.permcenter.autostart.AutoStartManagementActivity"
+                        )
+                    }
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    startActivity(Intent(Settings.ACTION_SETTINGS))
+                }
+
+                getSharedPreferences("prefs", Context.MODE_PRIVATE)
+                    .edit().putBoolean("background_permissao_solicitada", true).apply()
+            }
+            .show()
+    }
+
+    private fun jaSolicitouBackground(): Boolean {
+        return getSharedPreferences("prefs", Context.MODE_PRIVATE)
+            .getBoolean("background_permissao_solicitada", false)
+    }
+
+    private fun mostrarTelaBoasVindas() {
+        AlertDialog.Builder(this)
+            .setTitle("Tudo pronto!")
+            .setMessage(
+                "O TaskLock começará a registrar seu uso de aplicativos.\n\n" +
+                        "Os dados se tornarão mais precisos ao longo do dia.\n\n" +
+                        "Volte depois para acompanhar suas estatísticas!"
+            )
+            .setPositiveButton("Ok") { dialog, _ ->
+                dialog.dismiss()
+                getSharedPreferences("prefs", Context.MODE_PRIVATE)
+                    .edit().putBoolean("boas_vindas_mostrada", true).apply()
+            }
+            .show()
+    }
+
+    private fun boasVindasJaMostrada(): Boolean {
+        return getSharedPreferences("prefs", Context.MODE_PRIVATE)
+            .getBoolean("boas_vindas_mostrada", false)
+    }
+
+    private fun todasPermissoesConcedidas(): Boolean {
+        return hasUsageStatsPermission() && isAccessibilityEnabled() && hasBackgroundPermission()
+    }
+
+    private fun carregarAppsDoBanco() {
         val container = findViewById<LinearLayout>(R.id.appListContainer)
-        container.removeAllViews() // Limpa ao recarregar
+        container.removeAllViews()
+
+        val dao = AppUsageDatabase.getInstance(this).appUsageDao()
         val pm = packageManager
-        val installedPackages = pm.getInstalledApplications(0).associateBy { it.packageName }
 
-        val usageEventsMap = getUsageEventsCalculated()
+        Thread {
+            val apps = dao.getAllAgrupado()
 
-        val usageList = usageEventsMap
-            .filterKeys { installedPackages.containsKey(it) }
-            .toList()
-            .sortedByDescending { it.second }
-            .take(30)
-
-        if (usageList.isEmpty()) {
-            Toast.makeText(this, "Nenhum app detectado nas últimas 24h.", Toast.LENGTH_LONG).show()
-            return
-        }
-
-        usageList.forEach { (pkg, tempoMs) ->
-            try {
-                val appInfo = installedPackages[pkg]!!
-                val appName = pm.getApplicationLabel(appInfo).toString()
-                val appIcon = pm.getApplicationIcon(appInfo)
-
-                val view = layoutInflater.inflate(R.layout.activity_item_app_block, container, false)
-                view.findViewById<ImageView>(R.id.appIcon).setImageDrawable(appIcon)
-                view.findViewById<TextView>(R.id.appName).text = "$appName (${formatTime(tempoMs)})"
-
-                // Restaurando funcionalidade do botão de tempo
-                val timeBtn = view.findViewById<Button>(R.id.appTimerButton)
-                val tempos = arrayOf("15 min", "30 min", "1 h", "2 h")
-                timeBtn.setOnClickListener {
-                    val builder = androidx.appcompat.app.AlertDialog.Builder(this)
-                    builder.setTitle("Definir tempo de uso para $appName")
-                    builder.setItems(tempos) { _, which ->
-                        timeBtn.text = tempos[which]
-                        getSharedPreferences("AppTempos", Context.MODE_PRIVATE)
-                            .edit()
-                            .putString(pkg, tempos[which])
-                            .apply()
-                    }
-                    builder.show()
+            runOnUiThread {
+                if (apps.isEmpty()) {
+                    Toast.makeText(this, "Nenhum app encontrado no banco ainda.", Toast.LENGTH_LONG).show()
+                    return@runOnUiThread
                 }
 
-                container.addView(view)
-                Log.d("AppUsage", "Exibindo: $appName - ${formatTime(tempoMs)}")
+                val appsFiltrados = apps
+                    .filter { appInfoManual.containsKey(it.packageName) } // Filtro por Map
+                    .filterNot { deveOcultarApp(it.packageName) }
+                    .distinctBy { it.packageName }
+                    .sortedByDescending { it.totalTimeMs }
 
-            } catch (e: Exception) {
-                Log.e("AppUsage", "Erro ao processar $pkg", e)
+                chart.setData(appsFiltrados, appInfoManual)
+
+                appsFiltrados.forEach { app ->
+                    val view = layoutInflater.inflate(R.layout.activity_item_app_block, container, false)
+
+                    val manual = appInfoManual[app.packageName]
+                    if (manual != null) {
+                        view.findViewById<ImageView>(R.id.appIcon).setImageResource(manual.second)
+                        view.findViewById<TextView>(R.id.appName).text =
+                            "${manual.first} (${formatTime(app.totalTimeMs)})"
+                    }
+
+                    setupTimerButton(view, app.packageName, manual?.first ?: app.packageName)
+                    container.addView(view)
+                }
             }
-        }
-
-        Toast.makeText(this, "Apps carregados: ${container.childCount}", Toast.LENGTH_SHORT).show()
+        }.start()
     }
 
 
-    // Cálculo local robusto usando UsageEvents puro
-    private fun getUsageEventsCalculated(): Map<String, Long> {
-        val usageStatsManager = getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
-        val endTime = System.currentTimeMillis()
-        val startTime = endTime - 1000L * 60 * 60 * 24
-
-        val events = usageStatsManager.queryEvents(startTime, endTime)
-        val event = UsageEvents.Event()
-        val usageMap = mutableMapOf<String, Long>()
-        val foregroundTimestamps = mutableMapOf<String, Long>()
-
-        while (events.getNextEvent(event)) {
-            when (event.eventType) {
-                UsageEvents.Event.MOVE_TO_FOREGROUND, UsageEvents.Event.ACTIVITY_RESUMED -> {
-                    foregroundTimestamps[event.packageName] = event.timeStamp
-                }
-                UsageEvents.Event.MOVE_TO_BACKGROUND, UsageEvents.Event.ACTIVITY_PAUSED -> {
-                    foregroundTimestamps[event.packageName]?.let { start ->
-                        val duration = event.timeStamp - start
-                        if (duration > 0) {
-                            usageMap[event.packageName] = (usageMap[event.packageName] ?: 0) + duration
-                        }
-                    }
-                    foregroundTimestamps.remove(event.packageName)
-                }
-            }
-        }
-
-        foregroundTimestamps.forEach { (pkg, start) ->
-            val duration = endTime - start
-            if (duration > 0) {
-                usageMap[pkg] = (usageMap[pkg] ?: 0) + duration
-            }
-        }
-
-        Log.d("UsageEvents", "Apps detectados: ${usageMap.size}")
-        return usageMap
+    private fun deveOcultarApp(pkg: String): Boolean {
+        return prefixosSistema.any { pkg.startsWith(it) } ||
+                pkg.contains("launcher") ||
+                pkg.contains("setupwizard")
     }
 
-    private fun formatTime(milliseconds: Long): String {
-        val seconds = milliseconds / 1000
-        val hours = seconds / 3600
-        val minutes = (seconds % 3600) / 60
-        val secs = seconds % 60
-        return String.format("%dh %02dm %02ds", hours, minutes, secs)
+    private fun setupTimerButton(view: android.view.View, pkg: String, name: String) {
+        val btn = view.findViewById<Button>(R.id.appTimerButton)
+        val options = arrayOf("15 min", "30 min", "1 h", "2 h")
+        btn.setOnClickListener {
+            AlertDialog.Builder(this)
+                .setTitle("Definir tempo de uso para $name")
+                .setItems(options) { _, i ->
+                    btn.text = options[i]
+                    getSharedPreferences("AppTempos", Context.MODE_PRIVATE)
+                        .edit().putString(pkg, options[i]).apply()
+                }
+                .show()
+        }
+    }
+
+    private fun formatTime(ms: Long): String {
+        val sec = ms / 1000
+        val h = sec / 3600
+        val m = (sec % 3600) / 60
+        val s = sec % 60
+        return "%dh %02dm %02ds".format(h, m, s)
     }
 
     private fun hasUsageStatsPermission(): Boolean {
@@ -181,4 +294,42 @@ class UsoApp : AppCompatActivity() {
         )
         return mode == AppOpsManager.MODE_ALLOWED
     }
+
+    private fun isAccessibilityEnabled(): Boolean {
+        val am = getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
+        val enabledServices = am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_GENERIC)
+        return enabledServices.any { it.resolveInfo.serviceInfo.packageName == packageName }
+    }
+
+    private fun hasBackgroundPermission(): Boolean {
+        val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
+        return pm.isIgnoringBatteryOptimizations(packageName)
+    }
+
+    private fun checarEDefinirResetDiario() {
+        val prefs = getSharedPreferences("prefs", Context.MODE_PRIVATE)
+        val ultimaData = prefs.getString("ultima_data", null)
+
+        val hoje = java.text.SimpleDateFormat("yyyyMMdd").format(System.currentTimeMillis())
+
+        if (ultimaData == null || ultimaData != hoje) {
+            lifecycleScope.launch {
+                val dao = AppUsageDatabase.getInstance(this@UsoApp).appUsageDao()
+
+                withContext(Dispatchers.IO) {
+                    dao.deleteAll()
+                }
+
+                Toast.makeText(
+                    this@UsoApp,
+                    "Registros reiniciados para o novo dia ᕙ(`▿´)ᕗ.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            prefs.edit().putString("ultima_data", hoje).apply()
+        }
+    }
+
+
 }
