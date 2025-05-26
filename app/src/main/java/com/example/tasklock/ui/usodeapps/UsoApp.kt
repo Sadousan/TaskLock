@@ -1,11 +1,13 @@
 package com.example.tasklock
 
 import android.accessibilityservice.AccessibilityServiceInfo
+import com.example.tasklock.utils.AppInfoProvider.appInfoManual
 import android.app.AppOpsManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
@@ -28,37 +30,7 @@ class UsoApp : AppCompatActivity() {
     private lateinit var permissionLauncher: ActivityResultLauncher<Intent>
     private lateinit var chart: AppUsageChart
 
-    private val appInfoManual = mapOf(
-        "com.whatsapp" to Pair("WhatsApp", R.drawable.ic_whatsapp),
-        "com.instagram.android" to Pair("Instagram", R.drawable.ic_instagram),
-        "com.tiktok.android" to Pair("TikTok", R.drawable.ic_tiktok),//teste
-        "com.google.android.youtube" to Pair("YouTube", R.drawable.ic_youtube),
-        "org.telegram.messenger" to Pair("Telegram", R.drawable.ic_telegram),
-        "org.thunderdog.challegram" to Pair("Telegram X", R.drawable.ic_telegram),//teste
-        "com.discord" to Pair("Discord", R.drawable.ic_discord),
-        "com.android.chrome" to Pair("Chrome", R.drawable.ic_chrome),
-        "com.opera.browser" to Pair("Opera", R.drawable.ic_opera),
-        "com.netflix.mediaclient" to Pair("Netflix", R.drawable.ic_netflix),
-        "com.spotify.music" to Pair("Spotify", R.drawable.ic_spotify),
-        "com.openai.chatgpt" to Pair("Chatgpt", R.drawable.ic_openai),
-        "com.microsoft.teams" to Pair("Teams", R.drawable.ic_teams),
-        "com.snapchat.android" to Pair("Snapchat", R.drawable.ic_snapchat),//teste
-        "com.facebook.katana" to Pair("Facebook", R.drawable.ic_facebook),//teste
-        "com.facebooklite.katana" to Pair("Facebook Lite", R.drawable.ic_facebook), //teste
-        "ai.socialapps.speakmaster" to Pair("Poly AI", R.drawable.ic_polyai),
-        "com.narvii.amino.master" to Pair("Amino", R.drawable.ic_amino),
-        "com.kwai" to Pair("Kwai", R.drawable.android), //teste
-        "com.pinterest" to Pair("Pinterest", R.drawable.ic_pinterest), //teste
-        "com.rapidtv" to Pair("RapidTV", R.drawable.android), //teste
-        "com.messenger.lite" to Pair("Messenger", R.drawable.ic_messenger), //teste
-        "com.tinder" to Pair("Tinder", R.drawable.ic_tinder), //teste
-        "com.shopee.br" to Pair("Shopee", R.drawable.android), //teste
-        "com.amazon.mShop.android.shopping" to Pair("Amazon", R.drawable.android), //teste
-        "com.zzkko" to Pair("Shein", R.drawable.android), //teste
-        "com.alibaba.aliexpresshd" to Pair("AliExpress", R.drawable.android), //teste
 
-        // Adicione mais pacotes e nomes de aplicativo aqui
-    )
 
     private val prefixosSistema = listOf(
         "com.google.android.gms", "com.android.systemui", "com.android.phone", "com.android.settings",
@@ -79,8 +51,36 @@ class UsoApp : AppCompatActivity() {
         verificarPermissoes()
 
         findViewById<Button>(R.id.btnBlock)?.setOnClickListener {
-//                aqui deve fazer o bloqueio de apps que estiverem marcados no check
+            val container = findViewById<LinearLayout>(R.id.appListContainer)
+            val dao = AppUsageDatabase.getInstance(this).blockedAppsDao()
+
+            val appsMarcados = mutableListOf<String>()
+
+            for (i in 0 until container.childCount) {
+                val itemView = container.getChildAt(i)
+                val checkBox = itemView.findViewById<CheckBox>(R.id.appCheckBox)
+                val appName = itemView.findViewById<TextView>(R.id.appName).text.toString()
+
+                if (checkBox.isChecked) {
+                    appsMarcados.add(appName)
+                }
+            }
+
+            if (appsMarcados.isEmpty()) {
+                Toast.makeText(this, "Nenhum app selecionado para bloqueio.", Toast.LENGTH_SHORT).show()
+            } else {
+                val nomes = appsMarcados.joinToString("\n") { "- $it" }
+
+                AlertDialog.Builder(this)
+                    .setTitle("Apps bloqueados")
+                    .setMessage("Os seguintes apps estão bloqueados:\n\n$nomes")
+                    .setPositiveButton("OK") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
+            }
         }
+
 
         findViewById<ImageButton>(R.id.btnHelp)?.setOnClickListener {
             AlertDialog.Builder(this)
@@ -95,6 +95,10 @@ class UsoApp : AppCompatActivity() {
                     carregarAppsDoBanco()
                 }
                 .show()
+        }
+        TestScheduler.scheduleTestNotification(this)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
         }
 
     }
@@ -250,6 +254,35 @@ class UsoApp : AppCompatActivity() {
 
                     setupTimerButton(view, app.packageName, manual?.first ?: app.packageName)
                     container.addView(view)
+                    val daoBlocked = AppUsageDatabase.getInstance(this).blockedAppsDao()
+
+                    val checkBox = view.findViewById<CheckBox>(R.id.appCheckBox)
+
+// Verificar se já está bloqueado
+                    lifecycleScope.launch {
+                        val isBlocked = withContext(Dispatchers.IO) {
+                            daoBlocked.getByPackage(app.packageName) != null
+                        }
+                        checkBox.isChecked = isBlocked
+                    }
+
+                    checkBox.setOnCheckedChangeListener { _, isChecked ->
+                        lifecycleScope.launch {
+                            if (isChecked) {
+                                val currentLimit = getLimitFromPreferences(app.packageName)
+                                daoBlocked.insertOrUpdate(
+                                    com.example.tasklock.data.model.BlockedAppEntity(
+                                        packageName = app.packageName,
+                                        dailyLimitMs = currentLimit,
+                                        usedTodayMs = 0L
+                                    )
+                                )
+                            } else {
+                                daoBlocked.remove(app.packageName)
+                            }
+                        }
+                    }
+
                 }
             }
         }.start()
@@ -265,17 +298,40 @@ class UsoApp : AppCompatActivity() {
     private fun setupTimerButton(view: android.view.View, pkg: String, name: String) {
         val btn = view.findViewById<Button>(R.id.appTimerButton)
         val options = arrayOf("15 min", "30 min", "1 h", "2 h")
+
+        // Mostrar valor salvo
+        val label = getSharedPreferences("AppTempos", Context.MODE_PRIVATE).getString(pkg, "30 min")
+        btn.text = label
+
         btn.setOnClickListener {
             AlertDialog.Builder(this)
                 .setTitle("Definir tempo de uso para $name")
                 .setItems(options) { _, i ->
-                    btn.text = options[i]
+                    val chosen = options[i]
+                    btn.text = chosen
+
                     getSharedPreferences("AppTempos", Context.MODE_PRIVATE)
-                        .edit().putString(pkg, options[i]).apply()
+                        .edit().putString(pkg, chosen).apply()
+
+                    // Atualizar também no banco, se já estiver bloqueado
+                    lifecycleScope.launch {
+                        val dao = AppUsageDatabase.getInstance(this@UsoApp).blockedAppsDao()
+                        val blocked = withContext(Dispatchers.IO) {
+                            dao.getByPackage(pkg)
+                        }
+                        if (blocked != null) {
+                            dao.insertOrUpdate(
+                                blocked.copy(
+                                    dailyLimitMs = getLimitFromPreferences(pkg)
+                                )
+                            )
+                        }
+                    }
                 }
                 .show()
         }
     }
+
 
     private fun formatTime(ms: Long): String {
         val sec = ms / 1000
@@ -328,6 +384,25 @@ class UsoApp : AppCompatActivity() {
             }
 
             prefs.edit().putString("ultima_data", hoje).apply()
+        }
+    }
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (!isGranted) {
+            Toast.makeText(this, "Permissão de notificação não concedida. Algumas notificações não aparecerão.", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun getLimitFromPreferences(pkg: String): Long {
+        val label = getSharedPreferences("AppTempos", Context.MODE_PRIVATE).getString(pkg, "30 min")
+        return when (label) {
+            "15 min" -> 15 * 60 * 1000L
+            "30 min" -> 30 * 60 * 1000L
+            "1 h" -> 60 * 60 * 1000L
+            "2 h" -> 120 * 60 * 1000L
+            else -> 30 * 60 * 1000L
         }
     }
 

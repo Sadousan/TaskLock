@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#FFFFFF"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp">
+
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/android"
+        android:contentDescription="App bloqueado" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tempo esgotado!"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#FF0000"
+        android:layout_marginTop="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Você já utilizou todo o tempo permitido para este app hoje.\n\nComplete metas para liberar mais tempo!"
+        android:textSize="16sp"
+        android:textAlignment="center"
+        android:gravity="center"
+        android:layout_marginTop="12dp"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnVoltar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Voltar para o TaskLock"
+        android:background="@drawable/btn_icon_start_v2"
+        android:textColor="@color/white"
+        android:layout_marginTop="24dp"/>
+</LinearLayout>

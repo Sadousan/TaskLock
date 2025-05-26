@@ -1,17 +1,22 @@
 package com.example.tasklock.data.db
 
-import com.example.tasklock.data.db.AppUsageDao
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.tasklock.data.dao.BlockedAppsDao
 import com.example.tasklock.data.model.AppUsageEntity
+import com.example.tasklock.data.model.BlockedAppEntity
 
-
-@Database(entities = [AppUsageEntity::class], version = 1, exportSchema = false)
+@Database(
+    entities = [AppUsageEntity::class, BlockedAppEntity::class],
+    version = 2,
+    exportSchema = false
+)
 abstract class AppUsageDatabase : RoomDatabase() {
 
     abstract fun appUsageDao(): AppUsageDao
+    abstract fun blockedAppsDao(): BlockedAppsDao
 
     companion object {
         @Volatile
@@ -23,7 +28,9 @@ abstract class AppUsageDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppUsageDatabase::class.java,
                     "app_usage_db"
-                ).build()
+                )
+                    .fallbackToDestructiveMigration() // ✔️ (Futuramente podemos fazer migrations controladas)
+                    .build()
                 INSTANCE = instance
                 instance
             }

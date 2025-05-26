@@ -1,10 +1,13 @@
 package com.example.tasklock.ui.dadospessoais
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.tasklock.databinding.FragmentDadospessoaisBinding
@@ -23,6 +26,10 @@ class DadosPessoaisFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+        }
+
         val dadosPessoaisViewModel =
             ViewModelProvider(this).get(DadosPessoaisViewModel::class.java)
 
@@ -40,4 +47,12 @@ class DadosPessoaisFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (!isGranted) {
+            Toast.makeText(requireContext(), "Permissão de notificações não concedida", Toast.LENGTH_SHORT).show()
+        }
+    }
+
 }

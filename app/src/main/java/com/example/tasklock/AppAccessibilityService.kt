@@ -65,18 +65,16 @@ class AppAccessibilityService : AccessibilityService() {
             currentApp.startsWith("com.samsung.android.app.smartcapture") || // Captura Samsung
             currentApp.startsWith("com.samsung.android.app.taskedge") || // Painel Edge Samsung
             currentApp.startsWith("com.samsung.android.honeyboard") || // Teclado Samsung
-            currentApp.startsWith("com.sec.android.app.launcher") || // Launcher Samsung
-            currentApp.startsWith("com.motorola.launcher3") || // Launcher Motorola
             currentApp.startsWith("com.motorola.actions") || // Gestos Motorola
             currentApp.startsWith("com.motorola.motosignature.app") || // Personalizações Motorola
             currentApp.startsWith("com.google.android.apps.nexuslauncher") || // Launcher Pixel/Android puro
             currentApp.startsWith("com.google.android.setupwizard") || // Configurações iniciais Android
             currentApp.startsWith("com.android.launcher3") || // Launcher genérico Android puro
             currentApp.startsWith("android") || // Genérico para pacotes do sistema Android
-            currentApp.startsWith("com.mi.android.globallauncher") || // Launcher Xiaomi
-            currentApp.startsWith("com.miui.home.launcher") || // Launcher Xiaomi
             currentApp.startsWith("com.android.settings") ||
             currentApp.startsWith("com.nu.production") ||
+            currentApp.startsWith("com.samsung.accessibility") ||
+            currentApp.startsWith("com.samsung.android.app.galaxyfinder") ||
             currentApp == packageName) {
             return
         }

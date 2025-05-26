@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
     <!-- Permissões necessárias -->
-
-    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
-        tools:ignore="ProtectedPermissions"/>
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-
-
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
@@ -21,28 +18,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TaskLock"
-        tools:targetApi="31" >
-
-        <activity android:name=".TelaPrincipalMenu" />
-
-        <receiver android:name=".ResetReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.example.tasklock.ACTION_RESET_DAILY"/>
-            </intent-filter>
-        </receiver>
-
-        <receiver android:name=".BootReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-            </intent-filter>
-        </receiver>
-
+        tools:targetApi="31">
+        <activity
+            android:name=".ui.usodeapps.BlockedWarningActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.usodeapps.BlockedAppsActivity"
+            android:exported="false" /> <!-- Accessibility Service -->
         <service
             android:name=".AppAccessibilityService"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
-            android:exported="false">
+            android:exported="false"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
@@ -50,22 +36,35 @@
             <meta-data
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility_service_config" />
-        </service>
-
+        </service> <!-- BootReceiver -->
+        <receiver
+            android:name=".BootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver> <!-- ScreenReceiver -->
+        <receiver
+            android:name=".ScreenReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.SCREEN_OFF" />
+            </intent-filter>
+        </receiver> <!-- Activities -->
+        <activity android:name=".TelaPrincipalMenu" />
         <activity
             android:name=".ui.adicionartarefa.adicionar_tarefa"
             android:exported="false" />
-        <!-- Activity Principal (Launcher) -->
         <activity
             android:name=".Splash_screen"
             android:configChanges="orientation|screenSize|uiMode"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- Outras Telas -->
+        </activity>
         <activity
             android:name=".PermissoesActivity"
             android:exported="true" />
