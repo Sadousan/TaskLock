@@ -19,11 +19,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TaskLock"
         tools:targetApi="31">
+
         <activity
-            android:name=".ui.usodeapps.BlockedWarningActivity"
+            android:name=".BlockedWarningActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.usodeapps.BlockedAppsActivity"
+            android:name=".BlockedAppsActivity"
             android:exported="false" /> <!-- Accessibility Service -->
         <service
             android:name=".AppAccessibilityService"

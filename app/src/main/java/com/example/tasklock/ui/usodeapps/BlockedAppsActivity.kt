@@ -66,7 +66,7 @@ class BlockedAppsActivity : AppCompatActivity() {
                     }
                 }
 
-                container.addView(view)
+                container.addView(view) // acho q o erro ta aqui
             }
         }
     }
