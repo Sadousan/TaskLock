@@ -34,6 +34,7 @@ object AppInfoProvider {
         "com.zzkko" to Pair("Shein", R.drawable.android),
         "com.alibaba.aliexpresshd" to Pair("AliExpress", R.drawable.android),
         "com.wemesh.android" to Pair("Rave", R.drawable.android),
+        "com.hwsj.club" to Pair("Timo Club", R.drawable.android),
         // Adicione mais
     )
 }

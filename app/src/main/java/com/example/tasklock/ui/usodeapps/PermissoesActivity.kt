@@ -45,6 +45,7 @@ class PermissoesActivity : AppCompatActivity() {
                 Toast.makeText(this, "Conceda todas as permissões!", Toast.LENGTH_SHORT).show()
             }
         }
+
     }
 
     override fun onResume() {

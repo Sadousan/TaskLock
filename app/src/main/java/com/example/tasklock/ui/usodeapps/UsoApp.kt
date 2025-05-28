@@ -1,17 +1,16 @@
+
+
 package com.example.tasklock
 
 import android.accessibilityservice.AccessibilityServiceInfo
-import com.example.tasklock.utils.AppInfoProvider.appInfoManual
 import android.app.AppOpsManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
-import android.view.Gravity
 import android.view.accessibility.AccessibilityManager
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
@@ -21,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.lifecycleScope
 import com.example.tasklock.data.db.AppUsageDatabase
+import com.example.tasklock.utils.AppInfoProvider.appInfoManual
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -29,8 +29,6 @@ class UsoApp : AppCompatActivity() {
 
     private lateinit var permissionLauncher: ActivityResultLauncher<Intent>
     private lateinit var chart: AppUsageChart
-
-
 
     private val prefixosSistema = listOf(
         "com.google.android.gms", "com.android.systemui", "com.android.phone", "com.android.settings",
@@ -50,37 +48,9 @@ class UsoApp : AppCompatActivity() {
         inicializarPermissionLauncher()
         verificarPermissoes()
 
-        findViewById<Button>(R.id.btnBlock)?.setOnClickListener {
-            val container = findViewById<LinearLayout>(R.id.appListContainer)
-            val dao = AppUsageDatabase.getInstance(this).blockedAppsDao()
-
-            val appsMarcados = mutableListOf<String>()
-
-            for (i in 0 until container.childCount) {
-                val itemView = container.getChildAt(i)
-                val checkBox = itemView.findViewById<CheckBox>(R.id.appCheckBox)
-                val appName = itemView.findViewById<TextView>(R.id.appName).text.toString()
-
-                if (checkBox.isChecked) {
-                    appsMarcados.add(appName)
-                }
-            }
-
-            if (appsMarcados.isEmpty()) {
-                Toast.makeText(this, "Nenhum app selecionado para bloqueio.", Toast.LENGTH_SHORT).show()
-            } else {
-                val nomes = appsMarcados.joinToString("\n") { "- $it" }
-
-                AlertDialog.Builder(this)
-                    .setTitle("Apps bloqueados")
-                    .setMessage("Os seguintes apps estão bloqueados:\n\n$nomes")
-                    .setPositiveButton("OK") { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                    .show()
-            }
+        findViewById<Button>(R.id.btnBlock).setOnClickListener {
+            bloquearAppsSelecionados()
         }
-
 
         findViewById<ImageButton>(R.id.btnHelp)?.setOnClickListener {
             AlertDialog.Builder(this)
@@ -96,11 +66,12 @@ class UsoApp : AppCompatActivity() {
                 }
                 .show()
         }
+
         TestScheduler.scheduleTestNotification(this)
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             requestPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
         }
-
     }
 
     override fun onResume() {
@@ -112,6 +83,54 @@ class UsoApp : AppCompatActivity() {
         }
     }
 
+    private fun bloquearAppsSelecionados() {
+        val container = findViewById<LinearLayout>(R.id.appListContainer)
+        val dao = AppUsageDatabase.getInstance(this).blockedAppsDao()
+
+        val appsParaBloquear = mutableListOf<String>()
+
+        for (i in 0 until container.childCount) {
+            val itemView = container.getChildAt(i)
+            val checkBox = itemView.findViewById<CheckBox>(R.id.appCheckBox)
+
+            val packageName = itemView.tag as String
+
+            if (checkBox.isChecked) {
+                appsParaBloquear.add(packageName)
+            }
+        }
+
+        if (appsParaBloquear.isEmpty()) {
+            Toast.makeText(this, "Nenhum app selecionado para bloqueio.", Toast.LENGTH_SHORT).show()
+        } else {
+            AlertDialog.Builder(this)
+                .setTitle("Confirmar bloqueio")
+                .setMessage(
+                    "Você deseja bloquear os apps?\n\n" +
+                            appsParaBloquear.joinToString("\n- ", "- ") { pkg ->
+                                appInfoManual[pkg]?.first ?: pkg
+                            }
+                )
+                .setPositiveButton("Sim") { dialog, _ ->
+                    lifecycleScope.launch {
+                        appsParaBloquear.forEach { packageName ->
+                            val currentLimit = getLimitFromPreferences(packageName)
+                            dao.insertOrUpdate(
+                                com.example.tasklock.data.model.BlockedAppEntity(
+                                    packageName = packageName,
+                                    dailyLimitMs = currentLimit,
+                                    usedTodayMs = 0L
+                                )
+                            )
+                        }
+                        carregarAppsDoBanco()
+                    }
+                    dialog.dismiss()
+                }
+                .setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }
+                .show()
+        }
+    }
 
     private fun inicializarPermissionLauncher() {
         permissionLauncher = registerForActivityResult(
@@ -223,69 +242,52 @@ class UsoApp : AppCompatActivity() {
         container.removeAllViews()
 
         val dao = AppUsageDatabase.getInstance(this).appUsageDao()
-        val pm = packageManager
+        val daoBlocked = AppUsageDatabase.getInstance(this).blockedAppsDao()
 
-        Thread {
-            val apps = dao.getAllAgrupado()
-
-            runOnUiThread {
-                if (apps.isEmpty()) {
-                    Toast.makeText(this, "Nenhum app encontrado no banco ainda.", Toast.LENGTH_LONG).show()
-                    return@runOnUiThread
-                }
-
-                val appsFiltrados = apps
-                    .filter { appInfoManual.containsKey(it.packageName) } // Filtro por Map
-                    .filterNot { deveOcultarApp(it.packageName) }
-                    .distinctBy { it.packageName }
-                    .sortedByDescending { it.totalTimeMs }
-
-                chart.setData(appsFiltrados, appInfoManual)
-
-                appsFiltrados.forEach { app ->
-                    val view = layoutInflater.inflate(R.layout.activity_item_app_block, container, false)
-
-                    val manual = appInfoManual[app.packageName]
-                    if (manual != null) {
-                        view.findViewById<ImageView>(R.id.appIcon).setImageResource(manual.second)
-                        view.findViewById<TextView>(R.id.appName).text =
-                            "${manual.first} (${formatTime(app.totalTimeMs)})"
-                    }
-
-                    setupTimerButton(view, app.packageName, manual?.first ?: app.packageName)
-                    container.addView(view)
-                    val daoBlocked = AppUsageDatabase.getInstance(this).blockedAppsDao()
-
-                    val checkBox = view.findViewById<CheckBox>(R.id.appCheckBox)
-
-// Verificar se já está bloqueado
-                    lifecycleScope.launch {
-                        val isBlocked = withContext(Dispatchers.IO) {
-                            daoBlocked.getByPackage(app.packageName) != null
-                        }
-                        checkBox.isChecked = isBlocked
-                    }
-
-                    checkBox.setOnCheckedChangeListener { _, isChecked ->
-                        lifecycleScope.launch {
-                            if (isChecked) {
-                                val currentLimit = getLimitFromPreferences(app.packageName)
-                                daoBlocked.insertOrUpdate(
-                                    com.example.tasklock.data.model.BlockedAppEntity(
-                                        packageName = app.packageName,
-                                        dailyLimitMs = currentLimit,
-                                        usedTodayMs = 0L
-                                    )
-                                )
-                            } else {
-                                daoBlocked.remove(app.packageName)
-                            }
-                        }
-                    }
-
-                }
+        lifecycleScope.launch {
+            val apps = withContext(Dispatchers.IO) {
+                dao.getAllAgrupado()
             }
-        }.start()
+
+            val appsBloqueados = withContext(Dispatchers.IO) {
+                daoBlocked.getAll().map { it.packageName }
+            }
+
+            val appsFiltrados = apps
+                .filter { appInfoManual.containsKey(it.packageName) }
+                .filterNot { deveOcultarApp(it.packageName) }
+                .filterNot { appsBloqueados.contains(it.packageName) } // Ocultar apps bloqueados
+                .distinctBy { it.packageName }
+                .sortedByDescending { it.totalTimeMs }
+
+            if (appsFiltrados.isEmpty()) {
+                Toast.makeText(this@UsoApp, "Nenhum app encontrado no banco ainda.", Toast.LENGTH_LONG).show()
+                return@launch
+            }
+
+            chart.setData(appsFiltrados, appInfoManual)
+
+            appsFiltrados.forEach { app ->
+                val view = layoutInflater.inflate(R.layout.activity_item_app_block, container, false)
+
+                view.tag = app.packageName
+
+                val manual = appInfoManual[app.packageName]
+                if (manual != null) {
+                    view.findViewById<ImageView>(R.id.appIcon).setImageResource(manual.second)
+                    view.findViewById<TextView>(R.id.appName).text =
+                        "${manual.first} (${formatTime(app.totalTimeMs)})"
+                }
+
+                setupTimerButton(view, app.packageName, manual?.first ?: app.packageName)
+
+                val checkBox = view.findViewById<CheckBox>(R.id.appCheckBox)
+
+                checkBox.isChecked = false // Nenhum vem marcado
+
+                container.addView(view)
+            }
+        }
     }
 
 
@@ -299,7 +301,6 @@ class UsoApp : AppCompatActivity() {
         val btn = view.findViewById<Button>(R.id.appTimerButton)
         val options = arrayOf("15 min", "30 min", "1 h", "2 h")
 
-        // Mostrar valor salvo
         val label = getSharedPreferences("AppTempos", Context.MODE_PRIVATE).getString(pkg, "30 min")
         btn.text = label
 
@@ -313,7 +314,7 @@ class UsoApp : AppCompatActivity() {
                     getSharedPreferences("AppTempos", Context.MODE_PRIVATE)
                         .edit().putString(pkg, chosen).apply()
 
-                    // Atualizar também no banco, se já estiver bloqueado
+                    // Atualizar no banco, se estiver bloqueado
                     lifecycleScope.launch {
                         val dao = AppUsageDatabase.getInstance(this@UsoApp).blockedAppsDao()
                         val blocked = withContext(Dispatchers.IO) {
@@ -331,7 +332,6 @@ class UsoApp : AppCompatActivity() {
                 .show()
         }
     }
-
 
     private fun formatTime(ms: Long): String {
         val sec = ms / 1000
@@ -378,7 +378,7 @@ class UsoApp : AppCompatActivity() {
 
                 Toast.makeText(
                     this@UsoApp,
-                    "Registros reiniciados para o novo dia ᕙ(`▿´)ᕗ.",
+                    "Registros reiniciados para o novo dia ᕙ(▿´)ᕗ.",
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -405,6 +405,4 @@ class UsoApp : AppCompatActivity() {
             else -> 30 * 60 * 1000L
         }
     }
-
-
 }

@@ -33,8 +33,8 @@ class TestWorker(
         }
 
         val notification = NotificationCompat.Builder(applicationContext, channelId)
-            .setContentTitle("TaskLock (Teste)")
-            .setContentText("Notificação de teste a cada 2 horas.")
+            .setContentTitle("TaskLock (Teste Reset)")
+            .setContentText("Notificação de teste a cada meia noite.")
             .setSmallIcon(R.drawable.main_icon_tasklock)
             .setAutoCancel(true)
             .build()

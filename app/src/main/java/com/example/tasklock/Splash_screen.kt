@@ -41,6 +41,8 @@ class Splash_screen : AppCompatActivity() {
             insets
         }
 
+        ResetScheduler.scheduleDailyReset(this)
+
     }
 
     // Garante que o ângulo fique sempre entre 0° e 359°

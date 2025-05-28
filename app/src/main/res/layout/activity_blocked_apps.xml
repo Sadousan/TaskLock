@@ -16,20 +16,45 @@
             android:orientation="vertical"
             android:padding="16dp">
 
+            <!-- Título -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Apps de fresco bloqueados"
+                android:text="Apps bloqueados"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:textColor="#000000"/>
 
+            <!-- Lista dos apps bloqueados -->
             <LinearLayout
                 android:id="@+id/blockedAppListContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_marginTop="16dp"/>
+
+            <!-- Espaço entre lista e botão -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="24dp" />
+
+            <!-- Botão de desbloquear -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnUnblock"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/btn_icon_start_v2"
+                android:text="Desbloquear selecionados"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:layout_gravity="center" />
+
+            <!-- Espaço final para evitar corte em telas com gestos -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="40dp" />
         </LinearLayout>
     </ScrollView>
 
