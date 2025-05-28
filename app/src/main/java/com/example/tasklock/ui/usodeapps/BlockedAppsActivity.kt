@@ -18,7 +18,8 @@ class BlockedAppsActivity : AppCompatActivity() {
         "A disciplina pesa gramas, o arrependimento pesa toneladas.",
         "O tempo que poderia ser investido em suas metas está prestes a ser desperdiçado.",
         "O conforto de hoje é o atraso de amanhã.",
-        "Seu tempo é limitado! Não desista de suas metas."
+        "Seu tempo é limitado! Não desista de suas metas.",
+        "Nunca se é homem enquanto se não encontra alguma coisa pela qual se estaria disposto a morrer"
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {

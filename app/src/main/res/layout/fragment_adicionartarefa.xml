@@ -16,28 +16,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <!-- TOPO: imagem + texto sobreposto -->
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="80dp"> <!-- ajuste de altura-->
 
-            <ImageView
-                android:id="@+id/topOrange"
-                android:layout_width="422dp"
-                android:layout_height="104dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/top_orange" />
-
-            <TextView
-                android:id="@+id/txtTitulo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Adicionar Tarefa"
-                android:textColor="@android:color/white"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-        </FrameLayout>
 
         <!-- CONTEÚDO ADICIONAR TAREFA -->
         <LinearLayout

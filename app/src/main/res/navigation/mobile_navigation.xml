@@ -3,19 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_dadospessoais">
+    app:startDestination="@+id/nav_home">
 
     <fragment
-        android:id="@+id/nav_dadospessoais"
-        android:name="com.example.tasklock.ui.dadospessoais.DadosPessoaisFragment"
-        android:label="@string/menu_dadospessoais"
-        tools:layout="@layout/fragment_dadospessoais" />
+        android:id="@+id/nav_home"
+        android:name="com.example.tasklock.ui.home.HomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/nav_adicionartarefa"
         android:name="com.example.tasklock.ui.adicionartarefa.AdicionarTarefaFragment"
         android:label="@string/menu_adcionartarefa"
         tools:layout="@layout/fragment_adicionartarefa" />
+
+    <activity
+        android:id="@+id/nav_appsbloqueados"
+        android:name="com.example.tasklock.BlockedAppsActivity"
+        android:label="@string/menu_appsbloqueado"
+        tools:layout="@layout/activity_blocked_apps" />
+
     <activity
         android:id="@+id/nav_usoapp"
         android:name="com.example.tasklock.UsoApp"

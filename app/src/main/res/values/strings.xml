@@ -14,9 +14,10 @@
     <string name="title_activity_cadastro">Cadastro</string>
 
 
-    <string name="menu_dadospessoais">Dados Pessoais</string>
-    <string name="menu_usodeapps">Uso de Apps</string>
-    <string name="menu_adcionartarefa">Adicionar Tarefa</string>
+    <string name="menu_home">Home</string>
+    <string name="menu_usodeapps">Uso de apps</string>
+    <string name="menu_appsbloqueado">Apps bloqueados</string>
+    <string name="menu_adcionartarefa">Adicionar tarefa</string>
     <string name="action_settings">Configurações</string>
     <string name="accessibility_service_description">Descrição do serviço de acessibilidade</string>
 </resources>

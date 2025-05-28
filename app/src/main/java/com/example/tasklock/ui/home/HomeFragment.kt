@@ -1,4 +1,4 @@
-package com.example.tasklock.ui.dadospessoais
+package com.example.tasklock.ui.home
 
 import android.os.Build
 import android.os.Bundle
@@ -10,12 +10,12 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.tasklock.databinding.FragmentDadospessoaisBinding
+import com.example.tasklock.databinding.FragmentHomeBinding
 
 
-class DadosPessoaisFragment : Fragment() {
+class HomeFragment : Fragment() {
 
-    private var _binding: FragmentDadospessoaisBinding? = null
+    private var _binding: FragmentHomeBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -30,14 +30,14 @@ class DadosPessoaisFragment : Fragment() {
             requestPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
         }
 
-        val dadosPessoaisViewModel =
-            ViewModelProvider(this).get(DadosPessoaisViewModel::class.java)
+        val homeViewModel =
+            ViewModelProvider(this).get(HomeViewModel::class.java)
 
-        _binding = FragmentDadospessoaisBinding.inflate(inflater, container, false)
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         val textView: TextView = binding.textDadospessoais
-        dadosPessoaisViewModel.text.observe(viewLifecycleOwner) {
+        homeViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
         return root

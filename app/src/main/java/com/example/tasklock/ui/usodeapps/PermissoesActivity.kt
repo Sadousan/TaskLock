@@ -96,7 +96,7 @@ class PermissoesActivity : AppCompatActivity() {
         val enabledServices = am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_GENERIC)
         return enabledServices.any { it.resolveInfo.serviceInfo.packageName == packageName }
     }
-
+    @Suppress("DEPRECATION")
     private fun hasUsageStatsPermission(): Boolean {
         val appOps = getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
         val mode = appOps.checkOpNoThrow(

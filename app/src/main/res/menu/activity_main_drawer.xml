@@ -5,13 +5,20 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_dadospessoais"
+            android:id="@+id/nav_home"
             android:icon="@drawable/icusuarios"
-            android:title="@string/menu_dadospessoais" />
+            android:title="@string/menu_home" />
         <item
             android:id="@+id/nav_usoapp"
             android:icon="@drawable/icgrafico"
             android:title="@string/menu_usodeapps" />
+
+        <item
+            android:id="@+id/nav_appsbloqueados"
+            android:icon="@color/cardview_dark_background"
+            android:title="@string/menu_appsbloqueado"
+            />
+
         <item
             android:id="@+id/nav_adicionartarefa"
             android:icon="@drawable/icadicionartarefa"
