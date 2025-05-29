@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".UsoAppFragment"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".UsoApp">
 
     <ScrollView
         android:id="@+id/Main"
@@ -18,28 +18,15 @@
             android:orientation="vertical"
             android:paddingBottom="16dp">
 
-            <!-- Topo -->
-            <FrameLayout
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="100dp">
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/laranja"
+                app:popupTheme="@style/Theme.TaskLock.PopupOverlay" />
 
-                <ImageView
-                    android:id="@+id/topOrange"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/top_orange" />
 
-                <TextView
-                    android:id="@+id/txtTitulo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Uso de aplicativos"
-                    android:textColor="@android:color/white"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-            </FrameLayout>
+            <!-- Topo -->
 
             <!-- Gráfico -->
             <com.example.tasklock.AppUsageChart
