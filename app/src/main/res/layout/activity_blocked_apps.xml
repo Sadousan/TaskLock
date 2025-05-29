@@ -25,16 +25,16 @@
                 android:background="@color/laranja"
                 app:popupTheme="@style/Theme.TaskLock.PopupOverlay" />
 
+            <!-- Lista dos apps bloqueados -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Apps bloqueados"
-                android:textSize="20sp"
-                android:textStyle="bold"
                 android:layout_gravity="center"
-                android:textColor="#000000"/>
+                android:text="Apps bloqueados"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
-            <!-- Lista dos apps bloqueados -->
             <LinearLayout
                 android:id="@+id/blockedAppListContainer"
                 android:layout_width="match_parent"

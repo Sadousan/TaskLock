@@ -9,7 +9,7 @@ import android.content.IntentFilter
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import com.example.tasklock.data.db.AppUsageDatabase
-import com.example.tasklock.ui.usodeapps.BlockedWarningActivity
+import com.example.tasklock.overlay.OverlayWarningService
 import kotlinx.coroutines.*
 
 object TrackerState {
@@ -70,13 +70,9 @@ class AppAccessibilityService : AccessibilityService() {
                     Log.d("Accessibility", "APP BLOQUEADO PELO TASKLOCK: $currentApp")
 
                     withContext(Dispatchers.Main) {
-                        val intent = Intent(this@AppAccessibilityService, BlockedWarningActivity::class.java).apply {
-                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        }
-                        startActivity(intent)
-
-                        // Voltar para a tela inicial (Home)
-                        performGlobalAction(GLOBAL_ACTION_HOME)
+                        val overlayIntent = Intent(this@AppAccessibilityService, OverlayWarningService::class.java)
+                        overlayIntent.putExtra("APP", currentApp)
+                        startService(overlayIntent)
                     }
 
                     return@launch
@@ -171,6 +167,7 @@ class AppAccessibilityService : AccessibilityService() {
                 pkg.startsWith("com.samsung.") ||
                 pkg.startsWith("android") ||
                 pkg.startsWith("miui.systemui.") ||
+                pkg.startsWith("com.google.android.inputmethod.") ||
                 pkg == packageName
     }
 }

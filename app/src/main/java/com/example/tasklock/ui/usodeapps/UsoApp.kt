@@ -24,6 +24,7 @@ import com.example.tasklock.utils.AppInfoProvider.appInfoManual
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import android.net.Uri
 
 class UsoApp : AppCompatActivity() {
 
@@ -49,8 +50,24 @@ class UsoApp : AppCompatActivity() {
         verificarPermissoes()
 
         findViewById<Button>(R.id.btnBlock).setOnClickListener {
-            bloquearAppsSelecionados()
+            if (!Settings.canDrawOverlays(this)) {
+                AlertDialog.Builder(this)
+                    .setTitle("Permissão necessária")
+                    .setMessage("Para que o TaskLock funcione corretamente e bloqueie apps com sobreposição, conceda permissão de sobreposição.")
+                    .setPositiveButton("Conceder") { _, _ ->
+                        val intent = Intent(
+                            Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                            Uri.parse("package:$packageName")
+                        )
+                        startActivity(intent)
+                    }
+                    .setNegativeButton("Cancelar", null)
+                    .show()
+            } else {
+                bloquearAppsSelecionados()
+            }
         }
+
 
         findViewById<ImageButton>(R.id.btnHelp)?.setOnClickListener {
             AlertDialog.Builder(this)
