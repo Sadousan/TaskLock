@@ -23,17 +23,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/laranja"
-                app:popupTheme="@style/Theme.TaskLock.PopupOverlay" />
+                app:popupTheme="@style/Theme.TaskLock.PopupOverlay">
+
+                <TextView
+                    android:id="@+id/toolbar_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Aplicativos bloqueados"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/poppins"/>
+            </androidx.appcompat.widget.Toolbar>
+
 
             <!-- Lista dos apps bloqueados -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Apps bloqueados"
-                android:textColor="#000000"
-                android:textSize="20sp"
-                android:textStyle="bold" />
 
             <LinearLayout
                 android:id="@+id/blockedAppListContainer"
@@ -50,11 +55,11 @@
             <!-- Botão de desbloquear -->
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnUnblock"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="350dp"
+                android:layout_height="45dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/btn_icon_start_v2"
-                android:text="Desbloquear selecionados"
+                android:text="Desbloquear"
                 android:textColor="@android:color/white"
                 android:textSize="16sp"
                 android:layout_gravity="center" />

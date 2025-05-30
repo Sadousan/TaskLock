@@ -6,19 +6,24 @@
     android:layout_height="match_parent"
     tools:context=".TelaPrincipalMenu">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/Theme.TaskLock.AppBarOverlay">
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/laranja"
+        app:popupTheme="@style/Theme.TaskLock.PopupOverlay">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/laranja"
-            app:popupTheme="@style/Theme.TaskLock.PopupOverlay" />
-
-    </com.google.android.material.appbar.AppBarLayout>
+        <TextView
+            android:id="@+id/toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Página principal"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/poppins"/>
+    </androidx.appcompat.widget.Toolbar>
 
     <include layout="@layout/content_telaprincipalmenu" />
 

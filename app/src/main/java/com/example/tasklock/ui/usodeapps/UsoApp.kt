@@ -49,6 +49,7 @@ class UsoApp : AppCompatActivity() {
         inicializarPermissionLauncher()
         verificarPermissoes()
 
+
         findViewById<Button>(R.id.btnBlock).setOnClickListener {
             if (!Settings.canDrawOverlays(this)) {
                 AlertDialog.Builder(this)

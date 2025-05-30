@@ -6,6 +6,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".UsoApp">
 
+
+
     <ScrollView
         android:id="@+id/Main"
         android:layout_width="match_parent"
@@ -23,10 +25,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/laranja"
-                app:popupTheme="@style/Theme.TaskLock.PopupOverlay" />
+                app:popupTheme="@style/Theme.TaskLock.PopupOverlay">
 
-
-            <!-- Topo -->
+                <TextView
+                    android:id="@+id/toolbar_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Uso de aplicativos"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/poppins"/>
+            </androidx.appcompat.widget.Toolbar>
 
             <!-- Gráfico -->
             <com.example.tasklock.AppUsageChart
