@@ -25,6 +25,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import android.net.Uri
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import com.google.android.material.navigation.NavigationView
+import androidx.appcompat.widget.Toolbar
+
 
 class UsoApp : AppCompatActivity() {
 
@@ -90,6 +96,51 @@ class UsoApp : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             requestPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
         }
+
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false) // Oculta o título padrão herdado
+        findViewById<TextView>(R.id.toolbar_title)?.text = "Uso de aplicativos"
+
+        val drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
+        val toggle = ActionBarDrawerToggle(
+            this,
+            drawerLayout,
+            toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
+
+        )
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+
+        val navView = findViewById<NavigationView>(R.id.nav_view)
+        navView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.nav_home -> {
+                    startActivity(Intent(this, TelaPrincipalMenu::class.java))
+                    true
+                }
+                R.id.nav_usoapp -> {
+                    // Garante que a Activity será reiniciada apenas se não for a atual
+                    if (this !is UsoApp) {
+                        startActivity(Intent(this, UsoApp::class.java))
+                    }
+                    true
+                }
+                R.id.nav_appsbloqueados -> {
+                    if (this !is BlockedAppsActivity) {
+                        startActivity(Intent(this, BlockedAppsActivity::class.java))
+                    }
+                    true
+                }
+                else -> false
+            }.also {
+                drawerLayout.closeDrawer(GravityCompat.START)
+            }
+        }
+
+
     }
 
     override fun onResume() {

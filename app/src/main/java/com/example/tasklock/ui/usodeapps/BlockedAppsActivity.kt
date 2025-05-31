@@ -1,16 +1,23 @@
 package com.example.tasklock
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.*
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
 import com.example.tasklock.data.db.AppUsageDatabase
 import com.example.tasklock.utils.AppInfoProvider.appInfoManual
+import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import androidx.appcompat.widget.Toolbar
+
 
 class BlockedAppsActivity : AppCompatActivity() {
 
@@ -28,11 +35,47 @@ class BlockedAppsActivity : AppCompatActivity() {
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
+
         carregarAppsBloqueados()
 
         findViewById<Button>(R.id.btnUnblock).setOnClickListener {
             desbloquearAppsSelecionados()
         }
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false) // Oculta o título padrão herdado
+        findViewById<TextView>(R.id.toolbar_title)?.text = "Aplicativos bloqueados"
+
+        val drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
+        val toggle = ActionBarDrawerToggle(
+            this,
+            drawerLayout,
+            toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
+        )
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+
+        val navView = findViewById<NavigationView>(R.id.nav_view)
+        navView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.nav_home -> {
+                    startActivity(Intent(this, TelaPrincipalMenu::class.java))
+                    true
+                }
+                R.id.nav_usoapp -> {
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                    true
+                }
+                R.id.nav_appsbloqueados -> {
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                    true
+                }
+                else -> false
+            }
+        }
+
     }
 
     private fun desbloquearAppsSelecionados() {

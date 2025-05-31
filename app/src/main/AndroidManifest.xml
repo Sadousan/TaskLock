@@ -24,9 +24,6 @@
             android:name=".overlay.OverlayWarningService"
             android:exported="false" />
         <activity
-            android:name=".ui.usodeapps.BlockedWarningActivity"
-            android:exported="false" />
-        <activity
             android:name=".BlockedAppsActivity"
             android:exported="false" /> <!-- Accessibility Service -->
         <service
@@ -56,9 +53,6 @@
             </intent-filter>
         </receiver> <!-- Activities -->
         <activity android:name=".TelaPrincipalMenu" />
-        <activity
-            android:name=".ui.adicionartarefa.adicionar_tarefa"
-            android:exported="false" />
         <activity
             android:name=".Splash_screen"
             android:configChanges="orientation|screenSize|uiMode"

@@ -20,4 +20,7 @@
     <string name="menu_appsbloqueado">Apps bloqueados</string>
     <string name="menu_adicionartarefa">Adicionar Tarefa</string>
     <string name="action_settings">Configurações</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
 </resources>

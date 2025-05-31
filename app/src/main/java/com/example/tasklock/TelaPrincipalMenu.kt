@@ -40,7 +40,8 @@ class TelaPrincipalMenu : AppCompatActivity() {
             setOf(
                 R.id.nav_home,
                 R.id.nav_usoapp,
-                R.id.nav_appsbloqueados
+                R.id.nav_appsbloqueados,
+                R.id.nav_adicionartarefa
             ), drawerLayout
         )
 

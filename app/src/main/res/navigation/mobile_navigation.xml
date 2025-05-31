@@ -26,13 +26,13 @@
     <activity
         android:id="@+id/nav_appsbloqueados"
         android:name="com.example.tasklock.BlockedAppsActivity"
-        android:label="@string/menu_appsbloqueado"
+        android:label=""
         tools:layout="@layout/activity_blocked_apps" />
 
     <activity
         android:id="@+id/nav_usoapp"
         android:name="com.example.tasklock.UsoApp"
-        android:label="@string/menu_usodeapps"
+        android:label=""
         tools:layout="@layout/activity_uso_app" />
 
 </navigation>
