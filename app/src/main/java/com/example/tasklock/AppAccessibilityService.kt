@@ -168,6 +168,7 @@ class AppAccessibilityService : AccessibilityService() {
                 pkg.startsWith("android") ||
                 pkg.startsWith("miui.systemui.") ||
                 pkg.startsWith("com.google.android.inputmethod.") ||
+                pkg.startsWith("com.google.android.gms") ||
                 pkg == packageName
     }
 }

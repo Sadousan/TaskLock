@@ -9,4 +9,18 @@
 
     <!-- Se também estiver faltando o estilo do PopupOverlay: -->
     <style name="Theme.TaskLock.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <string-array name="tipos_tarefa">
+        <item>Estudos</item>
+        <item>Exercício Físico</item>
+        <item>Trabalho</item>
+        <item>Esporte</item>
+    </string-array>
+
+    <string-array name="prioridades_tarefa">
+        <item>Leve</item>
+        <item>Moderada</item>
+        <item>Alta</item>
+    </string-array>
+
 </resources>

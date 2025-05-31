@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,8 +9,13 @@
     android:gravity="center"
     android:padding="24dp">
 
+    <ImageView
+        android:layout_width="215dp"
+        android:layout_height="189dp"
+        app:srcCompat="@drawable/main_icon_tasklock" />
+
     <TextView
-        android:text="Tempo de uso esgotado!\nComplete metas para continuar."
+        android:text="Tempo de uso esgotado!\nComplete suas metas para continuar."
         android:textColor="#FFFFFF"
         android:textSize="20sp"
         android:layout_width="wrap_content"

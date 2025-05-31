@@ -4,19 +4,23 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.tasklock.data.db.AppUsageDao
 import com.example.tasklock.data.dao.BlockedAppsDao
+import com.example.tasklock.data.dao.TarefaDao
 import com.example.tasklock.data.model.AppUsageEntity
 import com.example.tasklock.data.model.BlockedAppEntity
+import com.example.tasklock.data.model.TarefaEntity
 
 @Database(
-    entities = [AppUsageEntity::class, BlockedAppEntity::class],
-    version = 2,
+    entities = [AppUsageEntity::class, BlockedAppEntity::class, TarefaEntity::class],
+    version = 3, // <-- aumente a versão para refletir a nova entidade
     exportSchema = false
 )
 abstract class AppUsageDatabase : RoomDatabase() {
 
     abstract fun appUsageDao(): AppUsageDao
     abstract fun blockedAppsDao(): BlockedAppsDao
+    abstract fun tarefaDao(): TarefaDao // <-- novo DAO
 
     companion object {
         @Volatile
@@ -29,7 +33,7 @@ abstract class AppUsageDatabase : RoomDatabase() {
                     AppUsageDatabase::class.java,
                     "app_usage_db"
                 )
-                    .fallbackToDestructiveMigration() // ✔️ (Futuramente podemos fazer migrations controladas)
+                    .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
                 instance

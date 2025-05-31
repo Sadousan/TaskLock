@@ -1,46 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".ui.adicionartarefa.AdicionarTarefaFragment">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginBottom="89dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:clipToPadding="false"
+        android:layout_marginTop="?attr/actionBarSize">
 
-
-
-        <!-- CONTEÚDO ADICIONAR TAREFA -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:orientation="vertical">
 
-            <!-- Espaçamento -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="24dp" />
-
+            <!-- Ícone da tarefa -->
             <ImageView
                 android:id="@+id/imgIlustracao"
-                android:layout_width="154dp"
-                android:layout_height="154dp"
-                android:layout_gravity="center"
-                android:background="@drawable/img_borda"
-                android:contentDescription="Imagem Educacional"
-                android:padding="0.5dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_addtask" />
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:contentDescription="Ícone da tarefa"
+                android:src="@drawable/ic_addtask"
+                android:scaleType="fitCenter" />
 
+            <!-- Campo: Nome da Tarefa -->
             <EditText
                 android:id="@+id/edtNomeTarefa"
                 android:layout_width="match_parent"
@@ -60,21 +51,29 @@
                 android:hint="Escolha uma data para conclusão"
                 android:inputType="date" />
 
-            <!-- Spinner: Prioridade -->
-            <Spinner
-                android:id="@+id/spinnerPrioridade"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="16dp" />
+            <!-- CheckBox: Tarefa diária -->
+            <CheckBox
+                android:id="@+id/checkRecorrente"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="Tarefa diária (recorrente)" />
 
-            <!-- Spinner: Tipo de Tarefa -->
+            <!-- Spinner: Tipo da Tarefa -->
             <Spinner
                 android:id="@+id/spinnerTipoTarefa"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="16dp" />
 
-            <!-- Botão: Adicionar Tarefa (MUDAR GRADIENTE)-->
+            <!-- Spinner: Prioridade da Tarefa -->
+            <Spinner
+                android:id="@+id/spinnerPrioridade"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="16dp" />
+
+            <!-- Botão: Adicionar Tarefa -->
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnAdicionarTarefa"
                 android:layout_width="match_parent"
@@ -82,8 +81,9 @@
                 android:layout_marginTop="32dp"
                 android:background="@drawable/btn_icon_start"
                 android:text="Adicionar Tarefa"
+                android:textAllCaps="true"
                 android:textColor="@color/white" />
 
         </LinearLayout>
-    </LinearLayout>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

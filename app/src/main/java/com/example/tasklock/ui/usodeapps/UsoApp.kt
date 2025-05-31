@@ -94,7 +94,6 @@ class UsoApp : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        checarEDefinirResetDiario()
 
         if (todasPermissoesConcedidas()) {
             carregarAppsDoBanco()

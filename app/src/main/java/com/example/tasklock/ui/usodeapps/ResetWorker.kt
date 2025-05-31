@@ -19,12 +19,16 @@ class ResetWorker(
 
     override suspend fun doWork(): Result {
         withContext(Dispatchers.IO) {
-            AppUsageDatabase.getInstance(applicationContext).appUsageDao().deleteAll()
+            val db = AppUsageDatabase.getInstance(applicationContext)
+            db.appUsageDao().deleteAll()                       // Reseta uso geral
+            db.blockedAppsDao().resetDailyUsage()              // Reseta tempo de uso dos apps bloqueados
+
             Log.d("TaskLock", "Reset diário executado pelo WorkManager.")
             mostrarNotificacao()
         }
         return Result.success()
     }
+
 
     private fun mostrarNotificacao() {
         val channelId = "ResetChannel"
