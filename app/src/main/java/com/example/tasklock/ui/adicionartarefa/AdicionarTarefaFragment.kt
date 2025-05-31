@@ -38,7 +38,8 @@ class AdicionarTarefaFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Atualiza título da toolbar (usando TextView customizado)
-        requireActivity().findViewById<TextView>(R.id.toolbar_title)?.text = "Adicionar Tarefa"
+        requireActivity().findViewById<TextView>(R.id.toolbar_title)?.text = getString(R.string.menu_adicionartarefa)
+
 
         // Oculta FAB, se visível na MainActivity
         val fab = requireActivity().findViewById<View>(R.id.fab)

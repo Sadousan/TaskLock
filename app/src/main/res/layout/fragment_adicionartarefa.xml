@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     tools:context=".ui.adicionartarefa.AdicionarTarefaFragment">
 
     <ScrollView
@@ -28,7 +27,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="16dp"
                 android:contentDescription="Ícone da tarefa"
-                android:src="@drawable/ic_addtask"
+                android:src="@drawable/ic_estudos"
                 android:scaleType="fitCenter" />
 
             <!-- Campo: Nome da Tarefa -->

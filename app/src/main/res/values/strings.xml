@@ -12,12 +12,10 @@
     <string name="invalid_password">A senha precisa ter mais de 5 caracteres</string>
     <string name="login_failed">"Erro no login"</string>
     <string name="title_activity_cadastro">Cadastro</string>
-
-
     <string name="menu_home">Home</string>
     <string name="menu_usodeapps">Uso de apps</string>
     <string name="menu_appsbloqueado">Apps bloqueados</string>
-    <string name="menu_adcionartarefa">Adicionar tarefa</string>
+    <string name="menu_adicionartarefa">Adicionar Tarefa</string>
     <string name="action_settings">Configurações</string>
     <string name="accessibility_service_description">Descrição do serviço de acessibilidade</string>
 </resources>

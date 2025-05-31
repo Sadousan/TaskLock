@@ -22,6 +22,6 @@
         <item
             android:id="@+id/nav_adicionartarefa"
             android:icon="@drawable/icadicionartarefa"
-            android:title="@string/menu_adcionartarefa" />
+            android:title="@string/menu_adicionartarefa" />
     </group>
 </menu>

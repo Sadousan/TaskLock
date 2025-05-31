@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.tasklock.R
 import com.example.tasklock.databinding.FragmentHomeBinding
 
 
@@ -41,6 +42,17 @@ class HomeFragment : Fragment() {
             textView.text = it
         }
         return root
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        requireActivity().findViewById<TextView>(R.id.toolbar_title)?.text =
+            getString(R.string.menu_home)
+
+        // Oculta FAB, se visível na MainActivity
+        val fab = requireActivity().findViewById<View>(R.id.fab)
+        fab?.visibility = View.GONE
     }
 
     override fun onDestroyView() {

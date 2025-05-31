@@ -9,11 +9,6 @@
     android:gravity="center"
     android:padding="24dp">
 
-    <ImageView
-        android:layout_width="215dp"
-        android:layout_height="189dp"
-        app:srcCompat="@drawable/main_icon_tasklock" />
-
     <TextView
         android:text="Tempo de uso esgotado!\nComplete suas metas para continuar."
         android:textColor="#FFFFFF"

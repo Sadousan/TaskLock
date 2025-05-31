@@ -15,4 +15,9 @@
     <string name="login_failed">"Login failed"</string>
     <string name="title_activity_cadastro">Registration</string>
     <string name="accessibility_service_description">Task Lock: App monitoring service</string>
+    <string name="menu_home">Home</string>
+    <string name="menu_usodeapps">Uso de apps</string>
+    <string name="menu_appsbloqueado">Apps bloqueados</string>
+    <string name="menu_adicionartarefa">Adicionar Tarefa</string>
+    <string name="action_settings">Configurações</string>
 </resources>

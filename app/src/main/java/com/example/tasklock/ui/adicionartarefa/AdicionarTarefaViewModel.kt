@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 class AdicionarTarefaViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "Nome da tarefa, teste"
+
     }
     val text: LiveData<String> = _text
 }

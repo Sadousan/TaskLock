@@ -8,14 +8,20 @@
     <fragment
         android:id="@+id/nav_home"
         android:name="com.example.tasklock.ui.home.HomeFragment"
-        android:label="@string/menu_home"
+        android:label=""
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/nav_adicionartarefa"
         android:name="com.example.tasklock.ui.adicionartarefa.AdicionarTarefaFragment"
-        android:label="@string/menu_adcionartarefa"
-        tools:layout="@layout/fragment_adicionartarefa" />
+        android:label=""
+        tools:layout="@layout/fragment_adicionartarefa"/>
+    <action
+        android:id="@+id/action_nav_home_to_nav_adicionartarefa"
+        app:destination="@id/nav_adicionartarefa"
+        app:popUpTo="@id/nav_home"
+        app:popUpToInclusive="false" />
+
 
     <activity
         android:id="@+id/nav_appsbloqueados"
@@ -28,4 +34,5 @@
         android:name="com.example.tasklock.UsoApp"
         android:label="@string/menu_usodeapps"
         tools:layout="@layout/activity_uso_app" />
+
 </navigation>
