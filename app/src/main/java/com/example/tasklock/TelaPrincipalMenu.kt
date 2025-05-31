@@ -21,6 +21,8 @@ class TelaPrincipalMenu : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
+
         binding = ActivityTelaprincipalmenuBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -34,6 +36,11 @@ class TelaPrincipalMenu : AppCompatActivity() {
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_telaprincipalmenu)
+
+        val navigateTo = intent.getIntExtra("navigate_to", -1)
+        if (navigateTo != -1) {
+            navController.navigate(navigateTo)
+        }
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(

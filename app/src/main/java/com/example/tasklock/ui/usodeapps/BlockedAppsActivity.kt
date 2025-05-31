@@ -61,20 +61,43 @@ class BlockedAppsActivity : AppCompatActivity() {
         navView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.nav_home -> {
-                    startActivity(Intent(this, TelaPrincipalMenu::class.java))
+                    val intent = Intent(this, TelaPrincipalMenu::class.java).apply {
+                        putExtra("navigate_to", R.id.nav_home)
+                        flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    }
+                    startActivity(intent)
+                    finish()
                     true
                 }
+
                 R.id.nav_usoapp -> {
-                    drawerLayout.closeDrawer(GravityCompat.START)
+                    if (this !is UsoApp) {
+                        startActivity(Intent(this, UsoApp::class.java))
+                        finish()
+                    }
                     true
                 }
                 R.id.nav_appsbloqueados -> {
-                    drawerLayout.closeDrawer(GravityCompat.START)
+                    if (this !is BlockedAppsActivity) {
+                        startActivity(Intent(this, BlockedAppsActivity::class.java))
+                        finish()
+                    }
+                    true
+                }
+                R.id.nav_adicionartarefa -> {
+                    val intent = Intent(this, TelaPrincipalMenu::class.java).apply {
+                        putExtra("navigate_to", R.id.nav_adicionartarefa)
+                    }
+                    startActivity(intent)
+                    finish()
                     true
                 }
                 else -> false
+            }.also {
+                drawerLayout.closeDrawer(GravityCompat.START)
             }
         }
+
 
     }
 
