@@ -11,4 +11,6 @@
     <item name="emailinformado1" type="id" />
     <item name="textView3" type="id" />
     <item name="imageView1" type="id" />
+    <item name="salvarnovasenha" type="id" />
+    <item name="textview" type="id" />
 </resources>
