@@ -24,4 +24,8 @@ interface TarefaDao {
 
     @Query("SELECT * FROM tarefas WHERE concluida = 0")
     fun listarTarefasPendentes(): Flow<List<TarefaEntity>>
+
+    @Query("SELECT * FROM tarefas ORDER BY id DESC")
+    suspend fun listarTarefasDireto(): List<TarefaEntity>
+
 }

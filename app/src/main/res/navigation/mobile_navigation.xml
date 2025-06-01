@@ -10,6 +10,10 @@
         android:name="com.example.tasklock.ui.home.HomeFragment"
         android:label=""
         tools:layout="@layout/fragment_home" />
+    <action
+        android:id="@+id/action_home_to_adicionarTarefa"
+        app:destination="@id/nav_adicionartarefa" />
+
 
     <fragment
         android:id="@+id/nav_adicionartarefa"

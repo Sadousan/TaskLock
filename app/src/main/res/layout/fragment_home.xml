@@ -1,24 +1,218 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollHome"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:defaultNavHost="true"
-    tools:context=".ui.home.DadosPessoaisFragment">
+    android:padding="16dp"
+    android:layout_marginTop="65dp"
+    android:background="@color/branco">
 
 
-    <TextView
-        android:id="@+id/text_dadospessoais"
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:orientation="vertical">
+
+        <!-- Foto, nome do usuário e botão de menu -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp"
+            android:weightSum="1">
+
+            <ImageView
+                android:id="@+id/imgFotoPerfil"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:src="@drawable/exemplo_foto"
+                android:background="@drawable/img_borda"
+                android:scaleType="centerCrop"
+                android:layout_marginEnd="12dp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.8"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txtNomeUsuario"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Usuário"
+                    android:textStyle="bold"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/btnVerPerfil"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ver perfil"
+                    android:textSize="14sp"
+                    android:textColor="#5F5F5F" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <!-- Filtros -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="16dp">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnFiltrarRealizadas"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="REALIZADAS"
+                android:background="@drawable/btn_icon_start"
+                android:textColor="@android:color/white" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnFiltrarPendentes"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="PENDENTES"
+                android:background="@drawable/btn_icon_start"
+                android:textColor="@android:color/white"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+
+        <!-- Progresso -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SEU PROGRESSO"
+            android:textStyle="bold"
+            android:textSize="18dp"
+            android:layout_marginTop="24dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="145dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/btn_line"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/txtDiasConsecutivos"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="0 dias consecutivos"
+                android:textColor="@android:color/holo_orange_dark"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/imgProgressoMini"
+                android:layout_width="121dp"
+                android:layout_height="145dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="12dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_relogio" />
+        </LinearLayout>
+
+        <!-- Personalizar tarefas -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PERSONALIZAR TAREFAS"
+            android:textStyle="bold"
+            android:textSize="18dp"
+            android:layout_marginTop="24dp" />
+
+        <GridLayout
+            android:id="@+id/gridTipos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="5"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp"
+            android:padding="8dp">
+
+            <ImageButton
+                android:id="@+id/btnTipoEstudos"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_margin="8dp"
+                android:scaleType="fitCenter"
+                android:background="@drawable/btn_icon_start_v2"
+                android:src="@drawable/ic_estudos"
+                android:contentDescription="Estudos" />
+
+            <ImageButton
+                android:id="@+id/btnTipoExercicio"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_margin="8dp"
+                android:scaleType="fitCenter"
+                android:background="@drawable/btn_icon_start_v2"
+                android:src="@drawable/ic_exercicio"
+                android:contentDescription="Exercício" />
+
+            <ImageButton
+                android:id="@+id/btnTipoTrabalho"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_margin="8dp"
+                android:scaleType="fitCenter"
+                android:background="@drawable/btn_icon_start_v2"
+                android:src="@drawable/ic_trabalho"
+                android:contentDescription="Trabalho" />
+
+            <ImageButton
+                android:id="@+id/btnTipoEsporte"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_margin="8dp"
+                android:scaleType="fitCenter"
+                android:background="@drawable/btn_icon_start_v2"
+                android:src="@drawable/ic_esporte"
+                android:contentDescription="Esporte" />
+        </GridLayout>
+
+        <!-- Tarefas Diárias com ícone de lixeira -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="24dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="TAREFAS DIÁRIAS"
+                android:textSize="18dp"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/btnLixeira"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/btnlixeira"
+                android:contentDescription="Excluir Tarefas" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerTarefas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp" />
+
+    </LinearLayout>
+</ScrollView>

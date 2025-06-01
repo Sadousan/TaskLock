@@ -34,16 +34,23 @@ class AdicionarTarefaFragment : Fragment() {
 
         return root
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Atualiza título da toolbar (usando TextView customizado)
-        requireActivity().findViewById<TextView>(R.id.toolbar_title)?.text = getString(R.string.menu_adicionartarefa)
+        requireActivity().findViewById<TextView>(R.id.toolbar_title)?.text =
+            getString(R.string.menu_adicionartarefa)
 
 
-        // Oculta FAB, se visível na MainActivity
-        val fab = requireActivity().findViewById<View>(R.id.fab)
-        fab?.visibility = View.GONE
+        // Verifica se foi passado tipo pré-definido
+        val tipoPredefinido = arguments?.getString("tipoTarefaPredefinido")
+        tipoPredefinido?.let { tipo ->
+            val pos = resources.getStringArray(R.array.tipos_tarefa).indexOf(tipo)
+            if (pos >= 0) {
+                binding.spinnerTipoTarefa.setSelection(pos)
+                atualizarIconeTipoTarefa(tipo)
+            }
+        }
     }
 
 
@@ -79,14 +86,20 @@ class AdicionarTarefaFragment : Fragment() {
 
     private fun configurarListeners() {
         // Ícone muda conforme seleção do tipo
-        binding.spinnerTipoTarefa.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                val tipoSelecionado = parent.getItemAtPosition(position).toString()
-                atualizarIconeTipoTarefa(tipoSelecionado)
-            }
+        binding.spinnerTipoTarefa.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    val tipoSelecionado = parent.getItemAtPosition(position).toString()
+                    atualizarIconeTipoTarefa(tipoSelecionado)
+                }
 
-            override fun onNothingSelected(parent: AdapterView<*>) {}
-        }
+                override fun onNothingSelected(parent: AdapterView<*>) {}
+            }
 
         // Clique no botão para salvar tarefa
         binding.btnAdicionarTarefa.setOnClickListener {
@@ -100,7 +113,7 @@ class AdicionarTarefaFragment : Fragment() {
             "Exercício Físico" -> R.drawable.ic_exercicio
             "Trabalho" -> R.drawable.ic_trabalho
             "Esporte" -> R.drawable.ic_esporte
-            else -> R.drawable.ic_addtask
+            else -> R.drawable.exemplo_foto
         }
         binding.imgIlustracao.setImageResource(drawableId)
     }
@@ -109,11 +122,13 @@ class AdicionarTarefaFragment : Fragment() {
         val nome = binding.edtNomeTarefa.text.toString().trim()
         val tipo = binding.spinnerTipoTarefa.selectedItem.toString()
         val prioridade = binding.spinnerPrioridade.selectedItem.toString()
-        val data = if (binding.checkRecorrente.isChecked) null else binding.edtDataConclusao.text.toString()
+        val data =
+            if (binding.checkRecorrente.isChecked) null else binding.edtDataConclusao.text.toString()
         val recorrente = binding.checkRecorrente.isChecked
 
         if (nome.isEmpty()) {
-            Toast.makeText(requireContext(), "Digite um nome para a tarefa", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Digite um nome para a tarefa", Toast.LENGTH_SHORT)
+                .show()
             return
         }
 
@@ -139,7 +154,8 @@ class AdicionarTarefaFragment : Fragment() {
             db.tarefaDao().inserirTarefa(novaTarefa)
 
             withContext(Dispatchers.Main) {
-                Toast.makeText(requireContext(), "Tarefa salva com sucesso!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Tarefa salva com sucesso!", Toast.LENGTH_SHORT)
+                    .show()
                 limparCampos()
             }
         }
@@ -151,7 +167,7 @@ class AdicionarTarefaFragment : Fragment() {
         binding.spinnerPrioridade.setSelection(0)
         binding.edtDataConclusao.setText("")
         binding.checkRecorrente.isChecked = false
-        binding.imgIlustracao.setImageResource(R.drawable.ic_addtask)
+        binding.imgIlustracao.setImageResource(R.drawable.exemplo_foto)
     }
 
     override fun onDestroyView() {

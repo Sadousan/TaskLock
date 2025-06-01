@@ -26,20 +26,12 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val btnMenu = findViewById<Button>(R.id.btnMenu)
-
-        btnMenu.setOnClickListener {
-            goTomenuScreen()
-        }
 
         val btnComecar = findViewById<Button>(R.id.btn_comecarPrincipal)
 
         btnComecar.setOnClickListener {
             goToScreen()
         }
-    }
-    private fun goTomenuScreen() {
-        startActivity(Intent(this, BlockedAppsActivity::class.java))
     }
     private fun goToScreen() {
         startActivity(Intent(this, TelaPrincipalMenu::class.java))
