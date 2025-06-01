@@ -24,17 +24,17 @@ object AppInfoProvider {
         "com.facebooklite.katana" to Pair("Facebook Lite", R.drawable.ic_facebook),
         "ai.socialapps.speakmaster" to Pair("Poly AI", R.drawable.ic_polyai),
         "com.narvii.amino.master" to Pair("Amino", R.drawable.ic_amino),
-        "kwai.lite.video" to Pair("Kwai", R.drawable.android),
+        "kwai.lite.video" to Pair("Kwai", R.drawable.ic_kwai),
         "com.pinterest" to Pair("Pinterest", R.drawable.ic_pinterest),
         "com.rapidtv" to Pair("RapidTV", R.drawable.android),
         "com.messenger.lite" to Pair("Messenger", R.drawable.ic_messenger),
         "com.tinder" to Pair("Tinder", R.drawable.ic_tinder),
-        "com.shopee.br" to Pair("Shopee", R.drawable.android),
-        "com.amazon.mShop.android.shopping" to Pair("Amazon", R.drawable.android),
-        "com.zzkko" to Pair("Shein", R.drawable.android),
-        "com.alibaba.aliexpresshd" to Pair("AliExpress", R.drawable.android),
-        "com.wemesh.android" to Pair("Rave", R.drawable.android),
-        "com.hwsj.club" to Pair("Timo Club", R.drawable.android),
+        "com.shopee.br" to Pair("Shopee", R.drawable.ic_shopee),
+        "com.amazon.mShop.android.shopping" to Pair("Amazon", R.drawable.ic_amazon_logo),
+        "com.zzkko" to Pair("Shein", R.drawable.ic_shein),
+        "com.alibaba.aliexpresshd" to Pair("AliExpress", R.drawable.ic_aliexpress),
+        "com.wemesh.android" to Pair("Rave", R.drawable.ic_rave),
+        "com.hwsj.club" to Pair("Timo Club", R.drawable.android), //Não achei o icone
         // Adicione mais
     )
 }
