@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_container_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+
+<ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:clipToPadding="false"
+        android:layout_marginTop="?attr/actionBarSize">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Ícone da tarefa -->
+            <ImageView
+                android:id="@+id/imgIlustracao"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:contentDescription="Ícone da tarefa"
+                android:src="@drawable/ic_estudos"
+                android:scaleType="fitCenter" />
+
+            <!-- Campo: Nome da Tarefa -->
+            <EditText
+                android:id="@+id/edtNomeTarefa"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="24dp"
+                android:backgroundTint="#AAAAAA"
+                android:hint="Nome da tarefa"
+                android:inputType="text" />
+
+            <!-- Campo: Data para Conclusão -->
+            <EditText
+                android:id="@+id/edtDataConclusao"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="#AAAAAA"
+                android:hint="Escolha uma data para conclusão"
+                android:inputType="date" />
+
+            <!-- CheckBox: Tarefa diária -->
+            <CheckBox
+                android:id="@+id/checkRecorrente"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="Tarefa diária (recorrente)" />
+
+            <!-- Spinner: Tipo da Tarefa -->
+            <Spinner
+                android:id="@+id/spinnerTipoTarefa"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="16dp" />
+
+            <!-- Spinner: Prioridade da Tarefa -->
+            <Spinner
+                android:id="@+id/spinnerPrioridade"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="16dp" />
+
+            <!-- Botão: Adicionar Tarefa -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnAdicionarTarefa"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:background="@drawable/btn_icon_start"
+                android:text="Adicionar Tarefa"
+                android:textAllCaps="true"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>

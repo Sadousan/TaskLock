@@ -6,8 +6,11 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "blocked_apps")
 data class BlockedAppEntity(
     @PrimaryKey val packageName: String,
-    val dailyLimitMs: Long,
-    val usedTodayMs: Long = 0L
-    // val bonusTimeMs: Long = 0L //  uso futuro com tarefas
+    val appName: String,
+    val iconBase64: String?,
+    val dailyLimitMs: Long, // <
+    val usedTodayMs: Long,
+    val bonusMs: Long = 0L
 )
+
 

@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.tasklock.data.model.UserPreferences
 
 class Splash_screen : AppCompatActivity() {
     private lateinit var minuteAnimator: ObjectAnimator
@@ -112,7 +113,14 @@ class Splash_screen : AppCompatActivity() {
         }, maxDuration)
     }
     private fun goToMainScreen() {
-        startActivity(Intent(this, MainActivity::class.java))
+        val prefs = UserPreferences(this)
+        val intent = if (prefs.isLoggedIn()) {
+            Intent(this, TelaPrincipalMenu::class.java)
+        } else {
+            Intent(this, MainActivity::class.java)
+        }
+        startActivity(intent)
         finish()
-    }        //1 segundo após a animação parar (3s total)
+    } //1 segundo após a animação parar (3s total)
+
 }

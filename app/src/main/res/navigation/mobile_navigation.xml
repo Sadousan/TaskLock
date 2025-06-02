@@ -10,21 +10,13 @@
         android:name="com.example.tasklock.ui.home.HomeFragment"
         android:label=""
         tools:layout="@layout/fragment_home" />
-    <action
-        android:id="@+id/action_home_to_adicionarTarefa"
-        app:destination="@id/nav_adicionartarefa" />
 
 
-    <fragment
+    <activity
         android:id="@+id/nav_adicionartarefa"
-        android:name="com.example.tasklock.ui.adicionartarefa.AdicionarTarefaFragment"
+        android:name="com.example.tasklock.AdicionarTarefaActivity"
         android:label=""
-        tools:layout="@layout/fragment_adicionartarefa"/>
-    <action
-        android:id="@+id/action_nav_home_to_nav_adicionartarefa"
-        app:destination="@id/nav_adicionartarefa"
-        app:popUpTo="@id/nav_home"
-        app:popUpToInclusive="false" />
+        tools:layout="@layout/activity_adicionar_tarefa" />
 
 
     <activity

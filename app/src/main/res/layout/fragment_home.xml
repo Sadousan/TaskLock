@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    android:layout_marginTop="65dp"
+    android:layout_marginTop="60dp"
     android:background="@color/branco">
 
 
@@ -47,13 +47,6 @@
                     android:textStyle="bold"
                     android:textSize="18sp" />
 
-                <TextView
-                    android:id="@+id/btnVerPerfil"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Ver perfil"
-                    android:textSize="14sp"
-                    android:textColor="#5F5F5F" />
             </LinearLayout>
 
 
@@ -112,7 +105,7 @@
                 android:layout_weight="1"
                 android:text="0 dias consecutivos"
                 android:textColor="@android:color/holo_orange_dark"
-                android:textSize="16sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <ImageView
@@ -134,55 +127,71 @@
             android:textSize="18dp"
             android:layout_marginTop="24dp" />
 
-        <GridLayout
-            android:id="@+id/gridTipos"
+        <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:columnCount="5"
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp"
-            android:padding="8dp">
+            android:scrollbars="none"
+            android:layout_marginTop="8dp">
 
-            <ImageButton
-                android:id="@+id/btnTipoEstudos"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
-                android:layout_margin="8dp"
-                android:scaleType="fitCenter"
-                android:background="@drawable/btn_icon_start_v2"
-                android:src="@drawable/ic_estudos"
-                android:contentDescription="Estudos" />
+            <LinearLayout
+                android:id="@+id/gridTipos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp">
 
-            <ImageButton
-                android:id="@+id/btnTipoExercicio"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
-                android:layout_margin="8dp"
-                android:scaleType="fitCenter"
-                android:background="@drawable/btn_icon_start_v2"
-                android:src="@drawable/ic_exercicio"
-                android:contentDescription="Exercício" />
+                <ImageButton
+                    android:id="@+id/btnTipoEstudos"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:layout_margin="8dp"
+                    android:scaleType="fitCenter"
+                    android:background="@drawable/btn_icon_start_v2"
+                    android:src="@drawable/ic_estudos"
+                    android:contentDescription="Estudos" />
 
-            <ImageButton
-                android:id="@+id/btnTipoTrabalho"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
-                android:layout_margin="8dp"
-                android:scaleType="fitCenter"
-                android:background="@drawable/btn_icon_start_v2"
-                android:src="@drawable/ic_trabalho"
-                android:contentDescription="Trabalho" />
+                <ImageButton
+                    android:id="@+id/btnTipoExercicio"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/btn_icon_start_v2"
+                    android:contentDescription="Exercício"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_exercicio" />
 
-            <ImageButton
-                android:id="@+id/btnTipoEsporte"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
-                android:layout_margin="8dp"
-                android:scaleType="fitCenter"
-                android:background="@drawable/btn_icon_start_v2"
-                android:src="@drawable/ic_esporte"
-                android:contentDescription="Esporte" />
-        </GridLayout>
+                <ImageButton
+                    android:id="@+id/btnTipoTrabalho"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:layout_margin="8dp"
+                    android:scaleType="fitCenter"
+                    android:background="@drawable/btn_icon_start_v2"
+                    android:src="@drawable/ic_trabalho"
+                    android:contentDescription="Trabalho" />
+
+                <ImageButton
+                    android:id="@+id/btnTipoEsporte"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:layout_margin="8dp"
+                    android:scaleType="fitCenter"
+                    android:background="@drawable/btn_icon_start_v2"
+                    android:src="@drawable/ic_esporte"
+                    android:contentDescription="Esporte" />
+
+                <ImageButton
+                    android:id="@+id/btnOutros"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:layout_margin="8dp"
+                    android:scaleType="fitCenter"
+                    android:background="@drawable/btn_icon_start_v2"
+                    android:src="@drawable/ic_outras"
+                    android:contentDescription="Outras" />
+            </LinearLayout>
+        </HorizontalScrollView>
+
 
         <!-- Tarefas Diárias com ícone de lixeira -->
         <LinearLayout
@@ -193,17 +202,16 @@
             android:gravity="center_vertical">
 
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="324dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="TAREFAS DIÁRIAS"
                 android:textSize="18dp"
                 android:textStyle="bold" />
 
             <ImageButton
                 android:id="@+id/btnLixeira"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="25dp"
+                android:layout_height="match_parent"
                 android:background="@drawable/btnlixeira"
                 android:contentDescription="Excluir Tarefas" />
         </LinearLayout>

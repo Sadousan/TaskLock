@@ -19,7 +19,7 @@ import kotlinx.coroutines.withContext
 import androidx.appcompat.widget.Toolbar
 
 
-class BlockedAppsActivity : AppCompatActivity() {
+class BlockedAppsActivity : BaseActivity() {
 
     private val motivationalQuotes = listOf(
         "A disciplina pesa gramas, o arrependimento pesa toneladas.",
@@ -85,11 +85,10 @@ class BlockedAppsActivity : AppCompatActivity() {
                     true
                 }
                 R.id.nav_adicionartarefa -> {
-                    val intent = Intent(this, TelaPrincipalMenu::class.java).apply {
-                        putExtra("navigate_to", R.id.nav_adicionartarefa)
+                    if (this !is AdicionarTarefaActivity) {
+                        startActivity(Intent(this, AdicionarTarefaActivity::class.java))
+                        finish()
                     }
-                    startActivity(intent)
-                    finish()
                     true
                 }
                 else -> false

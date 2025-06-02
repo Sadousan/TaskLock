@@ -65,8 +65,10 @@ class AppAccessibilityService : AccessibilityService() {
             if (blockedApp != null) {
                 val totalUsage = blockedApp.usedTodayMs
                 val limit = blockedApp.dailyLimitMs
+                val bonus = blockedApp.bonusMs
+                val limiteTotal = limit + bonus
 
-                if (totalUsage >= limit) {
+                if (totalUsage >= limiteTotal) {
                     Log.d("Accessibility", "APP BLOQUEADO PELO TASKLOCK: $currentApp")
 
                     withContext(Dispatchers.Main) {
@@ -78,6 +80,7 @@ class AppAccessibilityService : AccessibilityService() {
                     return@launch
                 }
             }
+
 
             processarUsoNormal(currentApp, now)
         }

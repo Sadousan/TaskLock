@@ -23,5 +23,8 @@ interface BlockedAppsDao {
 
     @Query("UPDATE blocked_apps SET usedTodayMs = 0")
     suspend fun resetDailyUsage()
+
+    @Query("UPDATE blocked_apps SET bonusMs = :bonus WHERE packageName = :pkg")
+    suspend fun atualizarBonusApp(pkg: String, bonus: Long)
 }
 

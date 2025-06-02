@@ -28,4 +28,9 @@ interface TarefaDao {
     @Query("SELECT * FROM tarefas ORDER BY id DESC")
     suspend fun listarTarefasDireto(): List<TarefaEntity>
 
+    @Query("UPDATE tarefas SET concluida = 0 WHERE recorrente = 1 AND concluida = 1")
+    fun resetarTarefasRecorrentes()
+
+
+
 }

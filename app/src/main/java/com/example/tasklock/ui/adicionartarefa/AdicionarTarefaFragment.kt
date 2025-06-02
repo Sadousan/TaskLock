@@ -113,6 +113,7 @@ class AdicionarTarefaFragment : Fragment() {
             "Exercício Físico" -> R.drawable.ic_exercicio
             "Trabalho" -> R.drawable.ic_trabalho
             "Esporte" -> R.drawable.ic_esporte
+            "Outras" -> R.drawable.ic_outras
             else -> R.drawable.exemplo_foto
         }
         binding.imgIlustracao.setImageResource(drawableId)

@@ -1,24 +1,27 @@
 package com.example.tasklock.ui.home
 
+import android.app.Activity
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.tasklock.AdicionarTarefaActivity
 import com.example.tasklock.R
 import com.example.tasklock.data.db.AppUsageDatabase
 import com.example.tasklock.data.model.TarefaEntity
 import com.example.tasklock.databinding.FragmentHomeBinding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -29,6 +32,7 @@ class HomeFragment : Fragment() {
 
     private lateinit var tarefaAdapter: TarefaAdapter
     private var listaTarefas: MutableList<TarefaEntity> = mutableListOf()
+    private var progressoJob: Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,8 +48,18 @@ class HomeFragment : Fragment() {
 
         requireActivity().findViewById<TextView>(R.id.toolbar_title)?.text = "Página Principal"
 
+        adicionarTarefaLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                // Recarregar as tarefas ao voltar
+                carregarTarefas()
+            }
+        }
 
-        // Botão da lixeira para apagar tarefas selecionadas
+        configurarBotoesTipos()
+        configurarBotoesFiltro()
+
         binding.btnLixeira.setOnClickListener {
             val selecionadas = tarefaAdapter.obterSelecionadas()
             if (selecionadas.isEmpty()) {
@@ -74,8 +88,6 @@ class HomeFragment : Fragment() {
             adapter = tarefaAdapter
         }
 
-        configurarBotoesFiltro()
-        configurarBotoesTipos()
         carregarTarefas()
         atualizarProgressoDiasConsecutivos()
     }
@@ -104,16 +116,21 @@ class HomeFragment : Fragment() {
     }
 
     private fun configurarBotoesTipos() {
-        binding.btnTipoEstudos.setOnClickListener { abrirAdicionarTarefa("Estudos") }
+        binding.btnTipoEstudos.setOnClickListener { abrirAdicionarTarefa("Estudos")}
         binding.btnTipoExercicio.setOnClickListener { abrirAdicionarTarefa("Exercício Físico") }
         binding.btnTipoTrabalho.setOnClickListener { abrirAdicionarTarefa("Trabalho") }
         binding.btnTipoEsporte.setOnClickListener { abrirAdicionarTarefa("Esporte") }
+        binding.btnOutros.setOnClickListener { abrirAdicionarTarefa("Outras") }
     }
 
     private fun abrirAdicionarTarefa(tipo: String) {
-        val bundle = bundleOf("tipoTarefaPredefinido" to tipo)
-        findNavController().navigate(R.id.action_home_to_adicionarTarefa, bundle)
+        val intent = Intent(requireContext(), AdicionarTarefaActivity::class.java)
+        intent.putExtra("tipoTarefaPredefinido", tipo)
+        adicionarTarefaLauncher.launch(intent)
     }
+
+    private lateinit var adicionarTarefaLauncher: ActivityResultLauncher<Intent>
+
 
     private fun carregarTarefas() {
         lifecycleScope.launch {
@@ -127,7 +144,9 @@ class HomeFragment : Fragment() {
     }
 
     private fun atualizarProgressoDiasConsecutivos() {
-        lifecycleScope.launch {
+        // Cancela job anterior se houver
+        progressoJob?.cancel()
+        progressoJob = viewLifecycleOwner.lifecycleScope.launch {
             val db = AppUsageDatabase.getInstance(requireContext())
             val tarefas = withContext(Dispatchers.IO) {
                 db.tarefaDao().listarTarefasDireto()
@@ -139,7 +158,9 @@ class HomeFragment : Fragment() {
                 .toSet()
 
             val diasConsecutivos = contarDiasConsecutivos(diasCompletos)
-            binding.txtDiasConsecutivos.text = "$diasConsecutivos dias consecutivos"
+
+            // Verifica se o binding ainda está disponível
+            _binding?.txtDiasConsecutivos?.text = "$diasConsecutivos dias consecutivos"
         }
     }
 
@@ -168,8 +189,9 @@ class HomeFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
+        progressoJob?.cancel()
         _binding = null
+        super.onDestroyView()
     }
 
     fun forcarRecarregarLista() {

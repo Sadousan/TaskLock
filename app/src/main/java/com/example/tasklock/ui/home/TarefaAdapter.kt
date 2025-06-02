@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tasklock.R
+import com.example.tasklock.bonus.BonusManager
 import com.example.tasklock.data.db.AppUsageDatabase
 import com.example.tasklock.data.model.TarefaEntity
 import kotlinx.coroutines.Dispatchers
@@ -63,6 +64,7 @@ class TarefaAdapter(
                 "Exercício Físico" -> R.drawable.ic_exercicio
                 "Trabalho" -> R.drawable.ic_trabalho
                 "Esporte" -> R.drawable.ic_esporte
+                "Outras" -> R.drawable.ic_outras
                 else -> R.drawable.exemplo_foto
             }
             imgIcone.setImageResource(iconRes)
@@ -113,9 +115,23 @@ class TarefaAdapter(
                     onTarefaAtualizada(tarefaAtualizada)
 
                     GlobalScope.launch(Dispatchers.IO) {
-                        val dao = AppUsageDatabase.getInstance(context).tarefaDao()
-                        dao.atualizarTarefa(tarefaAtualizada)
+                        val db = AppUsageDatabase.getInstance(context)
+                        db.tarefaDao().atualizarTarefa(tarefaAtualizada)
+
+                        // Se a tarefa foi marcada como concluída e tem bônus
+                        if (novaConclusao && tarefaAtualizada.bonusMs > 0) {
+                            val sucesso = BonusManager.processarConclusaoTarefa(context, tarefaAtualizada.bonusMs)
+
+                            withContext(Dispatchers.Main) {
+                                if (sucesso) {
+                                    Toast.makeText(context, "Bônus aplicado com sucesso!", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    Toast.makeText(context, "Limite de bônus diário atingido.", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
                     }
+
                 }
                 .setNegativeButton("Cancelar") { _, _ ->
                     notifyItemChanged(adapterPosition)

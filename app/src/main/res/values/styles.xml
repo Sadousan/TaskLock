@@ -15,6 +15,7 @@
         <item>Exercício Físico</item>
         <item>Trabalho</item>
         <item>Esporte</item>
+        <item>Outras</item>
     </string-array>
 
     <string-array name="prioridades_tarefa">

@@ -32,7 +32,7 @@ import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.widget.Toolbar
 
 
-class UsoApp : AppCompatActivity() {
+class UsoApp : BaseActivity() {
 
     private lateinit var permissionLauncher: ActivityResultLauncher<Intent>
     private lateinit var chart: AppUsageChart
@@ -142,11 +142,10 @@ class UsoApp : AppCompatActivity() {
                     true
                 }
                 R.id.nav_adicionartarefa -> {
-                    val intent = Intent(this, TelaPrincipalMenu::class.java).apply {
-                        putExtra("navigate_to", R.id.nav_adicionartarefa)
+                    if (this !is AdicionarTarefaActivity) {
+                        startActivity(Intent(this, AdicionarTarefaActivity::class.java))
+                        finish()
                     }
-                    startActivity(intent)
-                    finish()
                     true
                 }
                 else -> false
@@ -200,14 +199,30 @@ class UsoApp : AppCompatActivity() {
                     lifecycleScope.launch {
                         appsParaBloquear.forEach { packageName ->
                             val currentLimit = getLimitFromPreferences(packageName)
+                            val appName = appInfoManual[packageName]?.first ?: packageName
+                            val iconResId = appInfoManual[packageName]?.second
+
+                            val iconBase64 = iconResId?.let { resId ->
+                                val drawable = getDrawable(resId)
+                                (drawable as? android.graphics.drawable.BitmapDrawable)?.bitmap?.let { bitmap ->
+                                    val stream = java.io.ByteArrayOutputStream()
+                                    bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, stream)
+                                    android.util.Base64.encodeToString(stream.toByteArray(), android.util.Base64.DEFAULT)
+                                }
+                            } ?: ""
+
                             dao.insertOrUpdate(
                                 com.example.tasklock.data.model.BlockedAppEntity(
                                     packageName = packageName,
+                                    appName = appName,
+                                    iconBase64 = iconBase64,
                                     dailyLimitMs = currentLimit,
-                                    usedTodayMs = 0L
+                                    usedTodayMs = 0L,
+                                    bonusMs = 0L
                                 )
                             )
                         }
+
                         carregarAppsDoBanco()
                     }
                     dialog.dismiss()
@@ -455,15 +470,19 @@ class UsoApp : AppCompatActivity() {
 
         if (ultimaData == null || ultimaData != hoje) {
             lifecycleScope.launch {
-                val dao = AppUsageDatabase.getInstance(this@UsoApp).appUsageDao()
+                val db = AppUsageDatabase.getInstance(this@UsoApp)
 
                 withContext(Dispatchers.IO) {
-                    dao.deleteAll()
+                    // Reset de uso de apps
+                    db.appUsageDao().deleteAll()
+
+                    // Reset de tarefas recorrentes marcadas como concluídas
+                    db.tarefaDao().resetarTarefasRecorrentes()
                 }
 
                 Toast.makeText(
                     this@UsoApp,
-                    "Registros reiniciados para o novo dia ᕙ(▿´)ᕗ.",
+                    "Registros e tarefas diárias reiniciados para o novo dia ᕙ(▿´)ᕗ.",
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -471,6 +490,7 @@ class UsoApp : AppCompatActivity() {
             prefs.edit().putString("ultima_data", hoje).apply()
         }
     }
+
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()

@@ -9,11 +9,17 @@ import com.example.tasklock.data.dao.BlockedAppsDao
 import com.example.tasklock.data.dao.TarefaDao
 import com.example.tasklock.data.model.AppUsageEntity
 import com.example.tasklock.data.model.BlockedAppEntity
+import com.example.tasklock.data.model.BonusDiarioEntity
 import com.example.tasklock.data.model.TarefaEntity
 
 @Database(
-    entities = [AppUsageEntity::class, BlockedAppEntity::class, TarefaEntity::class],
-    version = 3, // <-- aumente a versão para refletir a nova entidade
+    entities = [
+        AppUsageEntity::class,
+        BlockedAppEntity::class,
+        TarefaEntity::class,
+        BonusDiarioEntity::class
+    ],
+    version = 6, //
     exportSchema = false
 )
 abstract class AppUsageDatabase : RoomDatabase() {
@@ -21,6 +27,8 @@ abstract class AppUsageDatabase : RoomDatabase() {
     abstract fun appUsageDao(): AppUsageDao
     abstract fun blockedAppsDao(): BlockedAppsDao
     abstract fun tarefaDao(): TarefaDao // <-- novo DAO
+    abstract fun bonusDiarioDao(): BonusDiarioDao
+
 
     companion object {
         @Volatile

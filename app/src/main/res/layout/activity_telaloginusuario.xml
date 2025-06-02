@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/raleway_thin"
         android:text="E-mail"
-        android:textFontWeight="4000"
+        android:textFontWeight="400"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -41,7 +41,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/raleway_thin"
         android:text="Senha"
-        android:textFontWeight="4000"
+        android:textFontWeight="400"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -130,5 +130,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.899" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/setavoltarCad"
+        android:layout_width="62dp"
+        android:layout_height="60dp"
+        android:background="@drawable/ic_voltarseta"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.045"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.023" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
