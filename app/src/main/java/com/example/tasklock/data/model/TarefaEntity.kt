@@ -12,6 +12,7 @@
         val data: String?, // null se for tarefa recorrente (diária)
         val recorrente: Boolean,
         val concluida: Boolean = false,
-        val bonusMs: Long = 0L
+        val bonusMs: Long = 0L,
+        val emailUsuario: String
     )
 

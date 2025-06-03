@@ -7,13 +7,16 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.tasklock.data.model.User
+import com.example.tasklock.data.db.AppUsageDatabase
 import com.example.tasklock.data.model.UserPreferences
-class Cadastro : BaseActivity() {
+import com.example.tasklock.data.model.UsuarioEntity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
+class Cadastro : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -25,7 +28,6 @@ class Cadastro : BaseActivity() {
             insets
         }
 
-        // Referências dos campos
         val nomeInput = findViewById<EditText>(R.id.campcadastrarnome)
         val emailInput = findViewById<EditText>(R.id.campemailcadastadro)
         val senhaInput = findViewById<EditText>(R.id.campcadastrarsenha)
@@ -33,7 +35,6 @@ class Cadastro : BaseActivity() {
         val btnCadastrar = findViewById<Button>(R.id.button)
         val loginText = findViewById<TextView>(R.id.textViewAnchor)
 
-        // Cadastrar-se (adicionar verificações/validações)
         btnCadastrar.setOnClickListener {
             val nome = nomeInput.text.toString().trim()
             val email = emailInput.text.toString().trim()
@@ -45,7 +46,7 @@ class Cadastro : BaseActivity() {
                 return@setOnClickListener
             }
 
-            if (!email.contains("@") || !email.contains(".")){
+            if (!email.contains("@") || !email.contains(".")) {
                 Toast.makeText(this, "Email inválido", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -55,8 +56,7 @@ class Cadastro : BaseActivity() {
                 return@setOnClickListener
             }
 
-//            regex
-            val regexSenha = Regex("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,}\$")
+            val regexSenha = Regex("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,}$")
             if (!regexSenha.matches(senha)) {
                 Toast.makeText(this, "A senha deve conter letras e números", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -67,16 +67,25 @@ class Cadastro : BaseActivity() {
                 return@setOnClickListener
             }
 
-            val user = User(nome, email, senha)
-            UserPreferences(this).saveUser(user)
+            val db = AppUsageDatabase.getInstance(this)
+            CoroutineScope(Dispatchers.IO).launch {
+                val existente = db.usuarioDao().buscarPorEmail(email)
+                if (existente != null) {
+                    runOnUiThread {
+                        Toast.makeText(this@Cadastro, "Este email já está cadastrado", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    db.usuarioDao().inserir(UsuarioEntity(nome = nome, email = email, senha = senha))
+                    UserPreferences(this@Cadastro).setUsuarioLogado(email)
 
-            val intent = Intent(this, TelaPrincipalMenu::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
-            finish()
+                    val intent = Intent(this@Cadastro, TelaPrincipalMenu::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    finish()
+                }
+            }
         }
 
-        // Já tem conta
         loginText.setOnClickListener {
             startActivity(Intent(this, telaloginusuario::class.java))
             finish()

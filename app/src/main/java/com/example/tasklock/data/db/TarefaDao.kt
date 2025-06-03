@@ -7,6 +7,15 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TarefaDao {
 
+    @Query("SELECT * FROM tarefas WHERE emailUsuario = :emailUsuario ORDER BY id DESC")
+    fun listarTarefasPorUsuario(emailUsuario: String): Flow<List<TarefaEntity>>
+
+    @Query("SELECT * FROM tarefas WHERE emailUsuario = :emailUsuario AND concluida = 1")
+    fun listarTarefasConcluidasPorUsuario(emailUsuario: String): Flow<List<TarefaEntity>>
+
+    @Query("SELECT * FROM tarefas WHERE emailUsuario = :emailUsuario AND concluida = 0")
+    fun listarTarefasPendentesPorUsuario(emailUsuario: String): Flow<List<TarefaEntity>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun inserirTarefa(tarefa: TarefaEntity)
 
@@ -16,21 +25,6 @@ interface TarefaDao {
     @Delete
     suspend fun deletarTarefa(tarefa: TarefaEntity)
 
-    @Query("SELECT * FROM tarefas ORDER BY id DESC")
-    fun listarTarefas(): Flow<List<TarefaEntity>>
-
-    @Query("SELECT * FROM tarefas WHERE concluida = 1")
-    fun listarTarefasConcluidas(): Flow<List<TarefaEntity>>
-
-    @Query("SELECT * FROM tarefas WHERE concluida = 0")
-    fun listarTarefasPendentes(): Flow<List<TarefaEntity>>
-
-    @Query("SELECT * FROM tarefas ORDER BY id DESC")
-    suspend fun listarTarefasDireto(): List<TarefaEntity>
-
-    @Query("UPDATE tarefas SET concluida = 0 WHERE recorrente = 1 AND concluida = 1")
-    fun resetarTarefasRecorrentes()
-
-
-
+    @Query("UPDATE tarefas SET concluida = 0 WHERE recorrente = 1 AND concluida = 1 AND emailUsuario = :emailUsuario")
+    fun resetarTarefasRecorrentesPorUsuario(emailUsuario: String)
 }

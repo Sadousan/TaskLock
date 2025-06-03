@@ -4,10 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.*
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.tasklock.data.db.AppUsageDatabase
 import com.example.tasklock.data.model.UserPreferences
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class telaloginusuario : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,37 +31,36 @@ class telaloginusuario : BaseActivity() {
         val txtVoltarCadastro = findViewById<TextView>(R.id.textView6)
         val btnVoltar = findViewById<Button?>(R.id.setavoltarCad)
 
-        // Botão de login
         btnEntrar.setOnClickListener {
             val email = emailInput.text.toString().trim()
             val senha = senhaInput.text.toString().trim()
 
-            val prefs = UserPreferences(this)
-            val user = prefs.getUser()
+            val db = AppUsageDatabase.getInstance(this)
+            CoroutineScope(Dispatchers.IO).launch {
+                val user = db.usuarioDao().buscarPorEmail(email)
+                if (user != null && user.senha == senha) {
+                    UserPreferences(this@telaloginusuario).setUsuarioLogado(email)
 
-            if (user != null && user.email == email && user.senha == senha) {
-                prefs.setLoggedIn(true)
-
-                val intent = Intent(this, TelaPrincipalMenu::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-                finish()
-            } else {
-                Toast.makeText(this, "Email ou senha incorretos", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this@telaloginusuario, TelaPrincipalMenu::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    finish()
+                } else {
+                    runOnUiThread {
+                        Toast.makeText(this@telaloginusuario, "Email ou senha incorretos", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
 
-        // Redirecionar para troca de senha
         txtEsqueceuSenha.setOnClickListener {
             startActivity(Intent(this, TrocarSenhaUsuario::class.java))
         }
 
-        // Redirecionar para tela de cadastro via TextView
         txtVoltarCadastro.setOnClickListener {
             irParaCadastro()
         }
 
-        // Redirecionar para tela de cadastro via botão (se estiver presente no layout)
         btnVoltar?.setOnClickListener {
             irParaCadastro()
         }

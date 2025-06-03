@@ -30,6 +30,8 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.widget.Toolbar
+import com.example.tasklock.data.model.UserPreferences
+
 
 
 class UsoApp : BaseActivity() {
@@ -465,19 +467,23 @@ class UsoApp : BaseActivity() {
     private fun checarEDefinirResetDiario() {
         val prefs = getSharedPreferences("prefs", Context.MODE_PRIVATE)
         val ultimaData = prefs.getString("ultima_data", null)
-
         val hoje = java.text.SimpleDateFormat("yyyyMMdd").format(System.currentTimeMillis())
 
         if (ultimaData == null || ultimaData != hoje) {
             lifecycleScope.launch {
                 val db = AppUsageDatabase.getInstance(this@UsoApp)
 
+                // Recupera o e-mail do usuário logado
+                val userPrefs = com.example.tasklock.data.model.UserPreferences(this@UsoApp)
+                val emailUsuario = userPrefs.getEmailUsuarioLogado() ?: ""
+
+
                 withContext(Dispatchers.IO) {
-                    // Reset de uso de apps
                     db.appUsageDao().deleteAll()
 
-                    // Reset de tarefas recorrentes marcadas como concluídas
-                    db.tarefaDao().resetarTarefasRecorrentes()
+                    if (emailUsuario.isNotEmpty()) {
+                        db.tarefaDao().resetarTarefasRecorrentesPorUsuario(emailUsuario)
+                    }
                 }
 
                 Toast.makeText(
@@ -490,6 +496,7 @@ class UsoApp : BaseActivity() {
             prefs.edit().putString("ultima_data", hoje).apply()
         }
     }
+
 
 
     private val requestPermissionLauncher = registerForActivityResult(

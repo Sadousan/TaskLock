@@ -14,11 +14,11 @@
 
     <ImageView
         android:id="@+id/imagempersonaliza"
-        android:layout_width="76dp"
-        android:layout_height="84dp"
+        android:layout_width="54dp"
+        android:layout_height="57dp"
         android:contentDescription=""
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        app:srcCompat="@drawable/ic_usergeneral_foreground" />
+        app:srcCompat="@drawable/exemplo_foto" />
 
     <TextView
         android:id="@+id/nomeusuario"

@@ -8,7 +8,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.tasklock.data.model.UserPreferences
+import com.example.tasklock.data.db.AppUsageDatabase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class TrocarSenhaUsuario : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,15 +40,15 @@ class TrocarSenhaUsuario : AppCompatActivity() {
                 Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            //            regex
-            val regexSenha = Regex("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,}\$")
-            if (!regexSenha.matches(novaSenha)) {
-                Toast.makeText(this, "A senha deve conter letras e números", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
 
             if (novaSenha.length < 6) {
                 Toast.makeText(this, "A senha deve ter no mínimo 6 caracteres", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val regexSenha = Regex("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,}$")
+            if (!regexSenha.matches(novaSenha)) {
+                Toast.makeText(this, "A senha deve conter letras e números", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -53,16 +57,24 @@ class TrocarSenhaUsuario : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val prefs = UserPreferences(this)
-            val user = prefs.getUser()
+            CoroutineScope(Dispatchers.IO).launch {
+                val db = AppUsageDatabase.getInstance(this@TrocarSenhaUsuario)
+                val usuarioDao = db.usuarioDao()
+                val usuario = usuarioDao.buscarPorEmail(email)
 
-            if (user != null && user.email == email) {
-                val novoUser = user.copy(senha = novaSenha)
-                prefs.saveUser(novoUser)
-                Toast.makeText(this, "Senha atualizada com sucesso", Toast.LENGTH_SHORT).show()
-                finish()
-            } else {
-                Toast.makeText(this, "E-mail não corresponde a nenhum usuário cadastrado", Toast.LENGTH_SHORT).show()
+                if (usuario != null) {
+                    val usuarioAtualizado = usuario.copy(senha = novaSenha)
+                    usuarioDao.atualizar(usuarioAtualizado)
+
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(this@TrocarSenhaUsuario, "Senha atualizada com sucesso", Toast.LENGTH_SHORT).show()
+                        finish()
+                    }
+                } else {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(this@TrocarSenhaUsuario, "E-mail não encontrado", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
     }

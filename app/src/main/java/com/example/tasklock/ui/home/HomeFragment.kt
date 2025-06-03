@@ -4,26 +4,24 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tasklock.AdicionarTarefaActivity
 import com.example.tasklock.R
 import com.example.tasklock.data.db.AppUsageDatabase
 import com.example.tasklock.data.model.TarefaEntity
+import com.example.tasklock.data.model.UserPreferences
 import com.example.tasklock.databinding.FragmentHomeBinding
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlinx.coroutines.flow.firstOrNull
 
 class HomeFragment : Fragment() {
 
@@ -33,6 +31,8 @@ class HomeFragment : Fragment() {
     private lateinit var tarefaAdapter: TarefaAdapter
     private var listaTarefas: MutableList<TarefaEntity> = mutableListOf()
     private var progressoJob: Job? = null
+    private lateinit var adicionarTarefaLauncher: ActivityResultLauncher<Intent>
+    private var emailUsuario: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,14 +46,23 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val prefs = UserPreferences(requireContext())
+        emailUsuario = prefs.getEmailUsuarioLogado() ?: ""
+
+        if (emailUsuario.isEmpty()) {
+            Toast.makeText(requireContext(), "Erro: usuário não autenticado", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        atualizarNomeUsuario(view)
         requireActivity().findViewById<TextView>(R.id.toolbar_title)?.text = "Página Principal"
 
         adicionarTarefaLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                // Recarregar as tarefas ao voltar
                 carregarTarefas()
+                atualizarProgressoDiasConsecutivos() // Atualiza progresso após adicionar
             }
         }
 
@@ -81,6 +90,7 @@ class HomeFragment : Fragment() {
             listaTarefas = listaTarefas.map {
                 if (it.id == tarefaAtualizada.id) tarefaAtualizada else it
             }.toMutableList()
+            atualizarProgressoDiasConsecutivos() // Atualiza progresso ao marcar tarefa
         }
 
         binding.recyclerTarefas.apply {
@@ -92,6 +102,15 @@ class HomeFragment : Fragment() {
         atualizarProgressoDiasConsecutivos()
     }
 
+    private fun atualizarNomeUsuario(view: View) {
+        lifecycleScope.launch {
+            val usuario = withContext(Dispatchers.IO) {
+                AppUsageDatabase.getInstance(requireContext()).usuarioDao().buscarPorEmail(emailUsuario)
+            }
+            view.findViewById<TextView?>(R.id.txtNomeUsuario)?.text = usuario?.nome ?: "Usuário"
+        }
+    }
+
     private fun excluirTarefasSelecionadas(tarefas: List<TarefaEntity>) {
         lifecycleScope.launch {
             val dao = AppUsageDatabase.getInstance(requireContext()).tarefaDao()
@@ -100,6 +119,7 @@ class HomeFragment : Fragment() {
             }
             tarefaAdapter.limparSelecao()
             carregarTarefas()
+            atualizarProgressoDiasConsecutivos()
         }
     }
 
@@ -116,7 +136,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun configurarBotoesTipos() {
-        binding.btnTipoEstudos.setOnClickListener { abrirAdicionarTarefa("Estudos")}
+        binding.btnTipoEstudos.setOnClickListener { abrirAdicionarTarefa("Estudos") }
         binding.btnTipoExercicio.setOnClickListener { abrirAdicionarTarefa("Exercício Físico") }
         binding.btnTipoTrabalho.setOnClickListener { abrirAdicionarTarefa("Trabalho") }
         binding.btnTipoEsporte.setOnClickListener { abrirAdicionarTarefa("Esporte") }
@@ -129,56 +149,51 @@ class HomeFragment : Fragment() {
         adicionarTarefaLauncher.launch(intent)
     }
 
-    private lateinit var adicionarTarefaLauncher: ActivityResultLauncher<Intent>
-
-
     private fun carregarTarefas() {
         lifecycleScope.launch {
             val db = AppUsageDatabase.getInstance(requireContext())
             val tarefas = withContext(Dispatchers.IO) {
-                db.tarefaDao().listarTarefasDireto()
+                db.tarefaDao().listarTarefasPorUsuario(emailUsuario).firstOrNull() ?: emptyList()
             }
+
             listaTarefas = tarefas.toMutableList()
             tarefaAdapter.atualizarLista(tarefas)
+            atualizarProgressoDiasConsecutivos() // Garantir atualização após carregamento
         }
     }
 
     private fun atualizarProgressoDiasConsecutivos() {
-        // Cancela job anterior se houver
         progressoJob?.cancel()
         progressoJob = viewLifecycleOwner.lifecycleScope.launch {
             val db = AppUsageDatabase.getInstance(requireContext())
             val tarefas = withContext(Dispatchers.IO) {
-                db.tarefaDao().listarTarefasDireto()
+                db.tarefaDao().listarTarefasPorUsuario(emailUsuario).firstOrNull() ?: emptyList()
             }
 
+            val formato = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            val hoje = formato.format(Date())
+
             val diasCompletos = tarefas
-                .filter { it.concluida && (it.data != null || it.recorrente) }
-                .mapNotNull { it.data ?: getHoje() }
+                .filter { it.concluida && ((it.data != null && it.data == hoje) || it.recorrente) }
+                .mapNotNull { it.data ?: hoje }
                 .toSet()
 
             val diasConsecutivos = contarDiasConsecutivos(diasCompletos)
-
-            // Verifica se o binding ainda está disponível
             _binding?.txtDiasConsecutivos?.text = "$diasConsecutivos dias consecutivos"
         }
     }
 
     private fun contarDiasConsecutivos(dias: Set<String>): Int {
         if (dias.isEmpty()) return 0
-
         val formato = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         val hoje = Calendar.getInstance()
         var count = 0
-
         while (true) {
             val dataStr = formato.format(hoje.time)
             if (dias.contains(dataStr)) {
                 count++
                 hoje.add(Calendar.DATE, -1)
-            } else {
-                break
-            }
+            } else break
         }
         return count
     }
@@ -195,14 +210,6 @@ class HomeFragment : Fragment() {
     }
 
     fun forcarRecarregarLista() {
-        lifecycleScope.launch {
-            val db = AppUsageDatabase.getInstance(requireContext())
-            val tarefas = withContext(Dispatchers.IO) {
-                db.tarefaDao().listarTarefasDireto()
-            }
-            listaTarefas = tarefas.toMutableList()
-            tarefaAdapter.atualizarLista(tarefas)
-            atualizarProgressoDiasConsecutivos()
-        }
+        carregarTarefas()
     }
 }

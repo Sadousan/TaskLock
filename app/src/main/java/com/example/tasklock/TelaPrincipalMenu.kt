@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
@@ -16,8 +17,10 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.example.tasklock.data.db.AppUsageDatabase
 import com.example.tasklock.data.model.UserPreferences
 import com.example.tasklock.databinding.ActivityTelaprincipalmenuBinding
+import kotlinx.coroutines.*
 
 class TelaPrincipalMenu : BaseActivity() {
 
@@ -28,37 +31,22 @@ class TelaPrincipalMenu : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val user = UserPreferences(this).getUser()
-        if (user == null) {
-            // Usuário não está logado, redireciona para tela inicial (Main)
-            val intent = Intent(this, MainActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
-            finish()
-            return
-        }
-
         binding = ActivityTelaprincipalmenuBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Preenche campos do usuário
-        val header = binding.navView.getHeaderView(0)
-        val txtNome = header.findViewById<TextView>(R.id.nomeusuario)
-        val txtEmail = header.findViewById<TextView>(R.id.email)
-        val txtNomeHome = findViewById<TextView>(R.id.txtNomeUsuario)
+        val prefs = UserPreferences(this)
+        val emailLogado = prefs.getEmailUsuarioLogado()
+        if (emailLogado == null) {
+            redirecionarParaLogin()
+            return
+        }
 
-        txtNome.text = user.nome
-        txtEmail.text = user.email
-        txtNomeHome.text = user.nome
-
-        // Configura Toolbar como barra de ação
         setSupportActionBar(binding.appBarTelaprincipalmenu.toolbar)
 
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_telaprincipalmenu)
 
-        // Cria botão do menu (≡) sincronizado com o Drawer
         drawerToggle = ActionBarDrawerToggle(
             this, drawerLayout, binding.appBarTelaprincipalmenu.toolbar,
             R.string.navigation_drawer_open,
@@ -67,7 +55,15 @@ class TelaPrincipalMenu : BaseActivity() {
         drawerLayout.addDrawerListener(drawerToggle)
         drawerToggle.syncState()
 
-        // Define os destinos principais do menu (sem botão de voltar)
+        drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
+            override fun onDrawerOpened(drawerView: View) {
+                atualizarCabecalhoUsuario(emailLogado)
+            }
+            override fun onDrawerClosed(drawerView: View) {}
+            override fun onDrawerStateChanged(newState: Int) {}
+        })
+
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.nav_home,
@@ -75,10 +71,8 @@ class TelaPrincipalMenu : BaseActivity() {
                 R.id.nav_appsbloqueados
             ), drawerLayout
         )
-
         setupActionBarWithNavController(navController, appBarConfiguration)
 
-        // Define ações do menu lateral
         navView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.nav_home, R.id.nav_usoapp, R.id.nav_appsbloqueados -> {
@@ -102,11 +96,8 @@ class TelaPrincipalMenu : BaseActivity() {
                         .setTitle("Sair")
                         .setMessage("Deseja realmente sair?")
                         .setPositiveButton("Sim") { _, _ ->
-                            UserPreferences(this).logout()
-                            val intent = Intent(this, MainActivity::class.java)
-                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            startActivity(intent)
-                            finish()
+                            prefs.logout()
+                            redirecionarParaLogin()
                         }
                         .setNegativeButton("Cancelar", null)
                         .show()
@@ -116,7 +107,6 @@ class TelaPrincipalMenu : BaseActivity() {
             true
         }
 
-        // Se for chamada com direcionamento para algum fragment
         if (intent.hasExtra("navigate_to") && savedInstanceState == null) {
             val navigateTo = intent.getIntExtra("navigate_to", -1)
             if (navigateTo != -1) {
@@ -130,6 +120,41 @@ class TelaPrincipalMenu : BaseActivity() {
                 }
             }
         }
+
+        atualizarCabecalhoUsuario(emailLogado)
+    }
+
+    private fun redirecionarParaLogin() {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
+    }
+
+    private fun atualizarCabecalhoUsuario(email: String) {
+        val navigationView = binding.navView
+        navigationView.removeHeaderView(navigationView.getHeaderView(0))
+        val headerView = layoutInflater.inflate(R.layout.nav_header_telaprincipalmenu, navigationView, false)
+        navigationView.addHeaderView(headerView)
+
+        val txtNome = headerView.findViewById<TextView>(R.id.nomeusuario)
+        val txtEmail = headerView.findViewById<TextView>(R.id.email)
+        val txtNomeHome = findViewById<TextView?>(R.id.txtNomeUsuario)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val usuario = AppUsageDatabase.getInstance(this@TelaPrincipalMenu).usuarioDao().buscarPorEmail(email)
+            withContext(Dispatchers.Main) {
+                txtNome.text = usuario?.nome ?: "Nome Usuário"
+                txtEmail.text = usuario?.email ?: "Email"
+                txtNomeHome?.text = usuario?.nome ?: "Usuário"
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val email = UserPreferences(this).getEmailUsuarioLogado()
+        if (email != null) atualizarCabecalhoUsuario(email)
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -155,10 +180,7 @@ class TelaPrincipalMenu : BaseActivity() {
                     .setMessage("Deseja realmente sair?")
                     .setPositiveButton("Sim") { _, _ ->
                         UserPreferences(this).logout()
-                        val intent = Intent(this, MainActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
-                        finish()
+                        redirecionarParaLogin()
                     }
                     .setNegativeButton("Cancelar", null)
                     .show()

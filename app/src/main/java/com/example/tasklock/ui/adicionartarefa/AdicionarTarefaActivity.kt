@@ -11,6 +11,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.tasklock.data.db.AppUsageDatabase
 import com.example.tasklock.data.model.TarefaEntity
+import com.example.tasklock.data.model.UserPreferences
 import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.*
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -31,23 +32,19 @@ class AdicionarTarefaActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_adicionar_tarefa)
 
-        // Infla o conteúdo da tela dentro do FrameLayout
         val container = findViewById<FrameLayout>(R.id.fragment_container_view)
         val contentView = layoutInflater.inflate(R.layout.layout_adicionar_tarefa_conteudo, container, false)
         container.addView(contentView)
 
-        // Configura a Toolbar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         findViewById<TextView>(R.id.toolbar_title).text = getString(R.string.menu_adicionartarefa)
 
-        // Configura o Drawer e o menu lateral
         drawerLayout = findViewById(R.id.drawer_layout)
         val navView = findViewById<NavigationView>(R.id.nav_view)
         configurarMenu(navView)
 
-        // Configura o botão de menu (≡)
         drawerToggle = ActionBarDrawerToggle(
             this, drawerLayout, toolbar,
             R.string.navigation_drawer_open,
@@ -56,12 +53,10 @@ class AdicionarTarefaActivity : BaseActivity() {
         drawerLayout.addDrawerListener(drawerToggle)
         drawerToggle.syncState()
 
-        // Inicializa campos da tela
         inicializarCampos()
         configurarSpinners()
         configurarListeners()
 
-        // Aplica tipo pré-definido, se veio via Intent
         intent.getStringExtra("tipoTarefaPredefinido")?.let { tipo ->
             val pos = resources.getStringArray(R.array.tipos_tarefa).indexOf(tipo)
             if (pos >= 0) {
@@ -81,7 +76,7 @@ class AdicionarTarefaActivity : BaseActivity() {
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
-        drawerToggle.syncState() // Garante funcionamento correto após recriação da tela
+        drawerToggle.syncState()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -90,7 +85,6 @@ class AdicionarTarefaActivity : BaseActivity() {
     }
 
     override fun onBackPressed() {
-        // Ao pressionar voltar, redireciona corretamente para a TelaPrincipalMenu
         startActivity(Intent(this, TelaPrincipalMenu::class.java).apply {
             putExtra("navigate_to", R.id.nav_home)
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
@@ -114,7 +108,6 @@ class AdicionarTarefaActivity : BaseActivity() {
                     startActivity(Intent(this, BlockedAppsActivity::class.java))
                 }
                 R.id.nav_adicionartarefa -> {
-                    // Já está nessa tela
                     return@setNavigationItemSelectedListener true
                 }
             }
@@ -202,6 +195,14 @@ class AdicionarTarefaActivity : BaseActivity() {
             else -> 0L
         }
 
+        val prefs = UserPreferences(this)
+        val emailUsuario = prefs.getEmailUsuarioLogado() ?: ""
+
+        if (emailUsuario.isEmpty()) {
+            Toast.makeText(this, "Erro: usuário não autenticado", Toast.LENGTH_LONG).show()
+            return
+        }
+
         val novaTarefa = TarefaEntity(
             nome = nome,
             tipo = tipo,
@@ -209,7 +210,8 @@ class AdicionarTarefaActivity : BaseActivity() {
             data = data,
             recorrente = recorrente,
             concluida = false,
-            bonusMs = bonus
+            bonusMs = bonus,
+            emailUsuario = emailUsuario
         )
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -217,13 +219,9 @@ class AdicionarTarefaActivity : BaseActivity() {
             db.tarefaDao().inserirTarefa(novaTarefa)
             withContext(Dispatchers.Main) {
                 Toast.makeText(this@AdicionarTarefaActivity, "Tarefa salva com sucesso!", Toast.LENGTH_SHORT).show()
-
-                // AVISA AO FRAGMENT QUE A TAREFA FOI SALVA
                 setResult(RESULT_OK)
                 finish()
-
             }
-
         }
     }
 

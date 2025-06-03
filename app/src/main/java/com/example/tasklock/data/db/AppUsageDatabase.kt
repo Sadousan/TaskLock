@@ -11,24 +11,24 @@ import com.example.tasklock.data.model.AppUsageEntity
 import com.example.tasklock.data.model.BlockedAppEntity
 import com.example.tasklock.data.model.BonusDiarioEntity
 import com.example.tasklock.data.model.TarefaEntity
-
+import com.example.tasklock.data.model.UsuarioEntity
 @Database(
     entities = [
         AppUsageEntity::class,
         BlockedAppEntity::class,
         TarefaEntity::class,
-        BonusDiarioEntity::class
+        BonusDiarioEntity::class,
+        UsuarioEntity::class
     ],
-    version = 6, //
+    version = 7,
     exportSchema = false
 )
 abstract class AppUsageDatabase : RoomDatabase() {
-
     abstract fun appUsageDao(): AppUsageDao
     abstract fun blockedAppsDao(): BlockedAppsDao
-    abstract fun tarefaDao(): TarefaDao // <-- novo DAO
+    abstract fun tarefaDao(): TarefaDao
     abstract fun bonusDiarioDao(): BonusDiarioDao
-
+    abstract fun usuarioDao(): UsuarioDao
 
     companion object {
         @Volatile
