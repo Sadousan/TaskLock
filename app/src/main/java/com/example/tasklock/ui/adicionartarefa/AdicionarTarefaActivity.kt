@@ -238,6 +238,10 @@ class AdicionarTarefaActivity : BaseActivity() {
             withContext(Dispatchers.Main) {
                 Toast.makeText(this@AdicionarTarefaActivity, "Tarefa salva com sucesso!", Toast.LENGTH_SHORT).show()
                 setResult(RESULT_OK)
+//                garante que volta para a home, pois o stack home é fechado ao se abrir via menu lateral
+                val intent = Intent(this@AdicionarTarefaActivity, TelaPrincipalMenu::class.java)
+                intent.putExtra("navigate_to", R.id.nav_home)
+                startActivity(intent)
                 finish()
             }
         }

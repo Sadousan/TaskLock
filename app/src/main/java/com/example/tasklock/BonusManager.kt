@@ -20,7 +20,7 @@ object BonusManager {
     suspend fun processarConclusaoTarefa(context: Context, bonusTotalTarefa: Long): Boolean {
         return withContext(Dispatchers.IO) {
             val db = AppUsageDatabase.getInstance(context)
-            val bonusDao = db.bonusDiarioDao() // Correção no nome do método
+            val bonusDao = db.bonusDiarioDao() // Correção no nome do metodo
             val blockedDao = db.blockedAppsDao()
 
             val hoje = dateFormat.format(Calendar.getInstance().time)

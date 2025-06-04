@@ -12,7 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-
+//Essa classe será herdada por as activities (com tempo fade in e out de transição e atualização de informações de usuário)
 open class BaseActivity : AppCompatActivity() {
 
     override fun startActivity(intent: Intent?) {
