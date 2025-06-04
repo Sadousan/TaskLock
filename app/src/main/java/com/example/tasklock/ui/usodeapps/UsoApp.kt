@@ -93,8 +93,6 @@ class UsoApp : BaseActivity() {
                 .show()
         }
 
-        TestScheduler.scheduleTestNotification(this)
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             requestPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
         }
@@ -117,6 +115,7 @@ class UsoApp : BaseActivity() {
         toggle.syncState()
 
         val navView = findViewById<NavigationView>(R.id.nav_view)
+        atualizarCabecalhoUsuario(navView, this)
         navView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.nav_home -> {
@@ -127,29 +126,39 @@ class UsoApp : BaseActivity() {
                     startActivity(intent)
                     finish()
                     true
-                }
-
-                R.id.nav_usoapp -> {
+                }R.id.nav_usoapp -> {
                     if (this !is UsoApp) {
                         startActivity(Intent(this, UsoApp::class.java))
                         finish()
                     }
                     true
-                }
-                R.id.nav_appsbloqueados -> {
+                }R.id.nav_appsbloqueados -> {
                     if (this !is BlockedAppsActivity) {
                         startActivity(Intent(this, BlockedAppsActivity::class.java))
                         finish()
                     }
                     true
-                }
-                R.id.nav_adicionartarefa -> {
+                }R.id.nav_adicionartarefa -> {
                     if (this !is AdicionarTarefaActivity) {
                         startActivity(Intent(this, AdicionarTarefaActivity::class.java))
                         finish()
                     }
                     true
-                }
+                }R.id.action_logout -> {
+                AlertDialog.Builder(this)
+                    .setTitle("Sair")
+                    .setMessage("Deseja realmente sair?")
+                    .setPositiveButton("Sim") { _, _ ->
+                        UserPreferences(this).logout()
+                        startActivity(Intent(this, MainActivity::class.java).apply {
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        })
+                        finish()
+                    }
+                    .setNegativeButton("Cancelar", null)
+                    .show()
+                return@setNavigationItemSelectedListener true
+            }
                 else -> false
             }.also {
                 drawerLayout.closeDrawer(GravityCompat.START)

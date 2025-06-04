@@ -9,7 +9,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/icusuarios"
+            android:icon="@drawable/menu_home"
             android:title="@string/menu_home" />
         <item
             android:id="@+id/nav_usoapp"
@@ -28,7 +28,7 @@
             android:title="@string/menu_adicionartarefa" />
         <item
             android:id="@+id/action_logout"
-            android:title="Logout"
+            android:title="Log out"
             android:icon="@drawable/ic_logout"
             app:showAsAction="never" />
     </group>

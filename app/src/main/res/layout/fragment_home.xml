@@ -65,19 +65,26 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:drawablePadding="2dp"
                 android:text="REALIZADAS"
                 android:background="@drawable/btn_icon_start"
                 android:textColor="@android:color/white" />
+
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnFiltrarPendentes"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:drawablePadding="2dp"
                 android:text="PENDENTES"
                 android:background="@drawable/btn_icon_start"
                 android:textColor="@android:color/white"
                 android:layout_marginStart="8dp" />
+
+
         </LinearLayout>
 
         <!-- Progresso -->

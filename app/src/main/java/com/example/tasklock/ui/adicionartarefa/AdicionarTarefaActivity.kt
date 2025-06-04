@@ -15,6 +15,7 @@ import com.example.tasklock.data.model.UserPreferences
 import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.*
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
 
 class AdicionarTarefaActivity : BaseActivity() {
 
@@ -43,6 +44,7 @@ class AdicionarTarefaActivity : BaseActivity() {
 
         drawerLayout = findViewById(R.id.drawer_layout)
         val navView = findViewById<NavigationView>(R.id.nav_view)
+        atualizarCabecalhoUsuario(navView, this)
         configurarMenu(navView)
 
         drawerToggle = ActionBarDrawerToggle(
@@ -110,6 +112,22 @@ class AdicionarTarefaActivity : BaseActivity() {
                 R.id.nav_adicionartarefa -> {
                     return@setNavigationItemSelectedListener true
                 }
+                R.id.action_logout -> {
+                    AlertDialog.Builder(this)
+                        .setTitle("Sair")
+                        .setMessage("Deseja realmente sair?")
+                        .setPositiveButton("Sim") { _, _ ->
+                            UserPreferences(this).logout()
+                            startActivity(Intent(this, MainActivity::class.java).apply {
+                                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            })
+                            finish()
+                        }
+                        .setNegativeButton("Cancelar", null)
+                        .show()
+                    return@setNavigationItemSelectedListener true
+                }
+
             }
             drawerLayout.closeDrawer(GravityCompat.START)
             finish()

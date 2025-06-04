@@ -1,6 +1,7 @@
 package com.example.tasklock
 
 import android.content.Context
+import android.util.Log
 import androidx.work.*
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
@@ -20,13 +21,16 @@ object ResetScheduler {
 
         val initialDelay = due.timeInMillis - now.timeInMillis
 
+        Log.d("ResetScheduler", "Reset agendado para: ${due.time}")
+
+
         val workRequest = PeriodicWorkRequestBuilder<ResetWorker>(1, TimeUnit.DAYS)
             .setInitialDelay(initialDelay, TimeUnit.MILLISECONDS)
             .build()
 
         WorkManager.getInstance(context).enqueueUniquePeriodicWork(
             "ResetDailyWork",
-            ExistingPeriodicWorkPolicy.UPDATE,
+            ExistingPeriodicWorkPolicy.KEEP,
             workRequest
         )
     }

@@ -3,6 +3,11 @@ package com.example.tasklock.ui.home
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.*
 import android.widget.TextView
@@ -122,18 +127,51 @@ class HomeFragment : Fragment() {
             atualizarProgressoDiasConsecutivos()
         }
     }
-
     private fun configurarBotoesFiltro() {
-        binding.btnFiltrarRealizadas.setOnClickListener {
+        val btnRealizadas = binding.btnFiltrarRealizadas
+        val btnPendentes = binding.btnFiltrarPendentes
+
+        val iconSize = 68  // tamanho desejado em pixels (ajustável)
+
+        // Função para carregar e redimensionar o PNG
+        fun getScaledDrawable(resourceId: Int, flipVertical: Boolean = false): Drawable? {
+            val originalBitmap = BitmapFactory.decodeResource(resources, resourceId)
+
+            val resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, iconSize, iconSize, true)
+
+            val finalBitmap = if (flipVertical) {
+                val matrix = Matrix().apply { preScale(1f, -1f) }
+                Bitmap.createBitmap(resizedBitmap, 0, 0, resizedBitmap.width, resizedBitmap.height, matrix, true)
+            } else {
+                resizedBitmap
+            }
+
+            return BitmapDrawable(resources, finalBitmap)
+        }
+
+        btnRealizadas.setOnClickListener {
             val filtradas = listaTarefas.filter { it.concluida }
             tarefaAdapter.atualizarLista(filtradas)
+
+            // Ícone normal
+            btnRealizadas.setCompoundDrawablesWithIntrinsicBounds(
+                getScaledDrawable(R.drawable.ic_filtro_tarefas), null, null, null
+            )
+            btnPendentes.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
         }
 
-        binding.btnFiltrarPendentes.setOnClickListener {
+        btnPendentes.setOnClickListener {
             val filtradas = listaTarefas.filter { !it.concluida }
             tarefaAdapter.atualizarLista(filtradas)
+
+            // Ícone invertido verticalmente
+            btnPendentes.setCompoundDrawablesWithIntrinsicBounds(
+                getScaledDrawable(R.drawable.ic_filtro_tarefas, flipVertical = true), null, null, null
+            )
+            btnRealizadas.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
         }
     }
+
 
     private fun configurarBotoesTipos() {
         binding.btnTipoEstudos.setOnClickListener { abrirAdicionarTarefa("Estudos") }
